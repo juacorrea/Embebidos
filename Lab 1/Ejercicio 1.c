@@ -22,43 +22,28 @@ enum bitNumber
 unsigned char p_state;
 void  Wr_Port_Bit ( enum portName p_port, enum bitNumber p_pin, unsigned char p_state);
 char Rd_Port_Bit (enum portName p_port, enum bitNumber p_pin);
-void Rd_Bot(int bot); //prende led correspondiente al boton apretado
 
 #define PRENDER_LED(Led)  Wr_Port_Bit(PORT_A,Led,1)
 #define APAGAR_LED(Led)  Wr_Port_Bit(PORT_A,Led,0)
-#define LEER_BOTON(bot) ((bot<4) ? Rd_Port_Bit(PORT_B,bot+2) : Rd_Port_Bit(PORT_F,bot))
+#define LEER_BOTON(bot) ((bot<4) ? Rd_Port_Bit(PORT_B,bot+2) : Rd_Port_Bit(PORT_F,bot)) //Lee y devuelve el valor del boton pasado como parametro
 
 main()
 {
 	unsigned int i;
-	//int p;
-	//int bot_stat;
-   //bot_stat=0;
+
 	WrPortI (SPCR,&SPCRShadow,0x084); //Setea Puerto A como SALIDA
 	WrPortI (PBDDR,&PBDDRShadow,0x000); //Setea Puerto B como ENTRADA
 
-	//PRENDER_LED(0);
-	//for(i=0; i<50000;i++);
-	APAGAR_LED(0);
-	APAGAR_LED(1);
-	APAGAR_LED(2);
-	APAGAR_LED(3);
-	APAGAR_LED(4);
-	APAGAR_LED(5);
-	APAGAR_LED(6);
-	APAGAR_LED(7);
-
+	for(i=0; i<8;i++) 
+	APAGAR_LED(i);
 
 	while (1)
    {
-   for(i=0; i<8;i++)
+   for(i=0; i<8;i++) // Si un boton esta apretado prende el led correspondiente y si no lo papaga
 		if (LEER_BOTON(i)==0)
 			PRENDER_LED(i);
 		else if (LEER_BOTON(i)!=0)
 			APAGAR_LED(i);
-     //	printf("B%d = %d\n",i,LEER_BOTON(i));
-     //	for(i=0; i<50000;i++);
-     // printf("\n");
    }
 
 }
