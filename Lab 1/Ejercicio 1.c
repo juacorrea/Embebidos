@@ -1,4 +1,3 @@
-//prueba
 enum portName
 {
 	PORT_A,
@@ -23,15 +22,16 @@ enum bitNumber
 unsigned char p_state;
 void  Wr_Port_Bit ( enum portName p_port, enum bitNumber p_pin, unsigned char p_state);
 char Rd_Port_Bit (enum portName p_port, enum bitNumber p_pin);
+void Rd_Bot(int bot); //prende led correspondiente al boton apretado
 
 #define PRENDER_LED(Led)  Wr_Port_Bit(PORT_A,Led,1)
 #define APAGAR_LED(Led)  Wr_Port_Bit(PORT_A,Led,0)
-//#define LEER_BOTON(Bot) Rd_Port_Bit(PORT_B,Bot)
+#define LEER_BOTON(bot) ((bot<4) ? Rd_Port_Bit(PORT_B,bot+2) : Rd_Port_Bit(PORT_F,bot))
 
 main()
 {
 	unsigned int i;
-	int p;
+	//int p;
 	//int bot_stat;
    //bot_stat=0;
 	WrPortI (SPCR,&SPCRShadow,0x084); //Setea Puerto A como SALIDA
@@ -50,19 +50,16 @@ main()
 
 
 	while (1)
-	{
-		for(p=0; p<8;p++)
-		{
-			if(Rd_Port_Bit(PORT_B,p) == 0)
-			{
-			PRENDER_LED(p);
-			}
-			else if(Rd_Port_Bit(PORT_B,p) == 1)
-			{
-			APAGAR_LED(p);
-			}
-		}
-	}
+   {
+   for(i=0; i<8;i++)
+		if (LEER_BOTON(i)==0)
+			PRENDER_LED(i);
+		else if (LEER_BOTON(i)!=0)
+			APAGAR_LED(i);
+     //	printf("B%d = %d\n",i,LEER_BOTON(i));
+     //	for(i=0; i<50000;i++);
+     // printf("\n");
+   }
 
 }
 
@@ -134,3 +131,5 @@ void Wr_Port_Bit ( enum portName p_port, enum bitNumber p_pin, unsigned char p_s
 		break;
 	}
 }
+
+
