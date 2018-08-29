@@ -1,3 +1,4 @@
+//Parte A y B 
 enum portName
 {
 	PORT_A,
@@ -26,23 +27,23 @@ char Rd_Port_Bit (enum portName p_port, enum bitNumber p_pin);
 #define PRENDER_LED(Led)  Wr_Port_Bit(PORT_A,Led,1)
 #define APAGAR_LED(Led)  Wr_Port_Bit(PORT_A,Led,0)
 #define LEER_BOTON(bot) ((bot<4) ? Rd_Port_Bit(PORT_B,bot+2) : Rd_Port_Bit(PORT_F,bot)) //Lee y devuelve el valor del boton pasado como parametro
-
+#define BOTON_APRETADO(bot) ((LEER_BOTON(bot)!=0)? 0 : 1 ) // Si el boton esta apretado es igual a 0, entonces devuelvo 1
 main()
 {
 	unsigned int i;
-
+//FALTA CONFIGURAR PUERTO F
 	WrPortI (SPCR,&SPCRShadow,0x084); //Setea Puerto A como SALIDA
 	WrPortI (PBDDR,&PBDDRShadow,0x000); //Setea Puerto B como ENTRADA
 
-	for(i=0; i<8;i++) 
+	for(i=0; i<8;i++)
 	APAGAR_LED(i);
 
 	while (1)
    {
    for(i=0; i<8;i++) // Si un boton esta apretado prende el led correspondiente y si no lo papaga
-		if (LEER_BOTON(i)==0)
+		if (BOTON_APRETADO(i)==1)
 			PRENDER_LED(i);
-		else if (LEER_BOTON(i)!=0)
+		else if (BOTON_APRETADO(i)!=0)
 			APAGAR_LED(i);
    }
 
