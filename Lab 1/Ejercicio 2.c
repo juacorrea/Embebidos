@@ -19,19 +19,49 @@ enum bitNumber
 	BIT_6,
 	BIT_7,
 };
-unsigned char p_state;
-void  Wr_Port_Bit ( enum portName p_port, enum bitNumber p_pin, unsigned char p_state);
-char Rd_Port_Bit (enum portName p_port, enum bitNumber p_pin);
+#define STX 2
+#define ETX 3
+//unsigned char p_state;
+void delay(long int delay);
+//void  Wr_Port_Bit ( enum portName p_port, enum bitNumber p_pin, unsigned char p_state);
+//char Rd_Port_Bit (enum portName p_port, enum bitNumber p_pin);
+int getAnalogInput(unsigned char p_input);
 
 main()
 {
 	unsigned int i;
 
-	//WrPortI (PCFR,&PCFRShadow,0x0); //Setea Puerto C como ENTRADA
-	
+	WrPortI (PCFR,&PCFRShadow,0x00); //Setea Puerto C como SERIAL
+
+
+	while(1)
+	{
+		getAnalogInput(0);
+	}
+}
+
+int getAnalogInput(unsigned char p_input)
+{
+	char data[29];
+	char inicio[5];
+	inicio[0] = STX;
+	inicio[1] = '0';
+	inicio[2] = '1';
+	inicio[3] = ETX;
+	inicio[4] = STX+ETX+'0'+'1';
+
+	serCopen(9600);
+	serCwrite(inicio,5);
+
+	serCread(&data,29,10);
+	printf("%s",data);
+	delay(100);
+	return 0;
 
 }
 
+
+/*
 char Rd_Port_Bit(enum portName p_port, enum bitNumber p_pin)
 {
 		int stat;
@@ -99,4 +129,11 @@ void Wr_Port_Bit ( enum portName p_port, enum bitNumber p_pin, unsigned char p_s
 		BitWrPortI (PFDR, &PFDRShadow, p_state, p_pin);
 		break;
 	}
+}
+*/
+void delay(long int delay)
+{
+	long int endtime;
+	endtime = MS_TIMER +delay;
+	while ((long)MS_TIMER - endtime <0);
 }
