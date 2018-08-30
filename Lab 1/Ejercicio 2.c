@@ -31,12 +31,13 @@ main()
 {
 	unsigned int i;
 
-	WrPortI (PCFR,&PCFRShadow,0x00); //Setea Puerto C como SERIAL
+	WrPortI (SCCR,&SCCRShadow,0x00); //Setea Puerto C como SERIAL
    serCopen(9600);
 
 	while(1)
 	{
-		getAnalogInput(0);
+   	getAnalogInput(0);
+		delay(2000);
 	}
 }
 
@@ -51,10 +52,10 @@ int getAnalogInput(unsigned char p_input)
 	inicio[4] = STX+ETX+'0'+'1';
 
 	serCwrite(inicio,5);
-   delay(500);
+	delay(500);
 	serCread(data,29,10);
 	printf("%s",data);
-	delay(100);
+	printf("\n");
 	return 0;
 
 }
