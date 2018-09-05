@@ -40,9 +40,9 @@ i = 0;												//utilizada en estado Enfriando
 			break;
 
 			case (No_Ok):
-				salida = LED_ROJO_Y_BUZZ;                		// Apago led verde, prendo rojo y buzzer
+				salida = LED_ROJO_Y_BUZZ;                			// Apago led verde, prendo rojo y buzzer
 				
-				entrada = entrada & BOT_APRETADO;			// Chequea si el segundo bit fue seteado (boton apretado), si es asi cambio de estado a Enfriando
+				entrada = entrada & BOT_APRETADO;				// Chequea si el segundo bit fue seteado (boton apretado), si es asi cambio de estado a Enfriando
 				if (entrada == BOT_APRETADO)            		
 					{
 						estado = Enfriando;
@@ -62,7 +62,7 @@ i = 0;												//utilizada en estado Enfriando
 	         else if ( i == 0)
 	         {
 	            i++;
-	            salida = CALDERA; 							//Enciende la caldera
+	            salida = CALDERA; 								//Enciende la caldera
 	         }
 			break;
 		}
