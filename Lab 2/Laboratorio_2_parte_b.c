@@ -4,9 +4,9 @@
 #use UTILITIES.LIB
 
 #define PRENDER						1
-#define APAGAR						0
+#define APAGAR					  		0
 #define CANTIDAD_EVENTOS			8
-#define VACIO						-1
+#define VACIO							-1
 enum Led_Numb
 {
 	LED_0,
@@ -21,7 +21,7 @@ enum Led_Numb
 
 struct Event
 {
-	char numero;
+	int numero;
 	char command;
 	char param;
 	char frec;
@@ -43,7 +43,7 @@ apagar, 0xFF si el evento no está configurado).
 main()
 {
 	struct tm tiempo_actual;
-	char *vacio;
+	int *vacio;
 	unsigned long int time;
 	char tarea;
 	int i;
@@ -55,14 +55,14 @@ main()
 	struct Event evento [CANTIDAD_EVENTOS];
 	for ( i = 0 ; i<CANTIDAD_EVENTOS; i++)
 	{
-	 evento[i].numero  = VACIO;
+	 evento[i].numero = VACIO;
    }
 
 
 	HW_init();
 	printf("Elija la tarea a realizar\n\t 1 = Fijar Hora del reloj\n\t 2 = Consultar Hora \n\t 3  = Agregar Evento al calendario \n\t 4 = Quitar Evento del calendario \n\t 5 = Consultar lista de eventos activos del calendario");
 	tarea = getchar ();                        //---------------------------------WARNING---------------------------------------
-
+   printf("after getchar");
 	costate // Usuario
 	{
 		switch (tarea)
@@ -74,7 +74,7 @@ main()
 
 			case(2)://consultar hora
 			time = read_rtc();
-			mktm ( tiempo_actual, time); //---------------------------------WARNING---------------------------------------
+			mktm ( &tiempo_actual, time); //---------------------------------WARNING---------------------------------------
 			printf ("dia %d ,mes %d, ano %d \n hora %d, minutos %d, segundos %d \n" ,tiempo_actual.tm_year, tiempo_actual.tm_mon, tiempo_actual.tm_mday, tiempo_actual.tm_hour, tiempo_actual.tm_min, tiempo_actual.tm_sec);
 			break;
 
@@ -119,7 +119,7 @@ main()
 				if(evento[evento_borrar].numero =! VACIO)
 				{
 					printf("Evento borrado\n");
-					evento[evento_borrar].numero = VACIO;   //---------------------------------WARNING---------------------------------------
+					evento[evento_borrar].numero =  VACIO;   //---------------------------------WARNING---------------------------------------
 
 				}
 				else
@@ -189,7 +189,7 @@ unsigned long int RTC_Time(void)
 	tiempo.tm_mon = atoi (mes);
 	tiempo.tm_year = atoi (ano);
 
-	return mktime(tiempo);        //---------------------------------WARNING---------------------------------------
+	return mktime(&tiempo);        //---------------------------------WARNING---------------------------------------
 }
 
 
