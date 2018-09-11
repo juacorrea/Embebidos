@@ -46,7 +46,8 @@ main()
 	char *vacio;
 	unsigned long int time;
 	char tarea;
-	int i, frec;
+	int i;
+	char frec;
 	char x;
 	char w[15];
 	char borrar [15];
@@ -54,14 +55,13 @@ main()
 	struct Event evento [CANTIDAD_EVENTOS];
 	for ( i = 0 ; i<CANTIDAD_EVENTOS; i++)
 	{
-		//evento[CANTIDAD_EVENTOS].numero  = VACIO;       //---------------------------------ERROR/WARNING---------------------------------------
-      evento[i].numero  = VACIO;
+	 evento[i].numero  = VACIO;
    }
 
 
 	HW_init();
 	printf("Elija la tarea a realizar\n\t 1 = Fijar Hora del reloj\n\t 2 = Consultar Hora \n\t 3  = Agregar Evento al calendario \n\t 4 = Quitar Evento del calendario \n\t 5 = Consultar lista de eventos activos del calendario");
-	tarea = getc ();                        //---------------------------------WARNING---------------------------------------
+	tarea = getchar ();                        //---------------------------------WARNING---------------------------------------
 
 	costate // Usuario
 	{
@@ -81,14 +81,14 @@ main()
 			case (3)://agregar evento
 			for ( i = 0 ; i<CANTIDAD_EVENTOS; i++)
 				{
-					*vacio = &evento.numero [i]; //vacio apunta a la direccion de evento.numero i   ---------------------------------ERROR---------------------------------------
+					vacio = &evento[i].numero ; //vacio apunta a la direccion de evento.numero i   ---------------------------------ERROR---------------------------------------
 					if (vacio == VACIO) //Cuando el lugar esta libre anoto el evento
 					{
 						evento[i].time = RTC_Time();
-						evento[i].numero [i] = i;        //---------------------------------ERROR---------------------------------------
+						evento[i].numero = i;
 						evento[i].command = PRENDER;
 						printf ("Elija un led para el evento\n");
-						x = getc ();
+						x = getchar ();
 						if (x < 8)
 						{
 							evento[i].param = x;      // x es el led que desea prender.
