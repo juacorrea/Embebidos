@@ -7,6 +7,7 @@
 #define APAGAR					  		0
 #define CANTIDAD_EVENTOS			8
 #define VACIO							-1
+#define STDIO_ENABLE_LONG_STRINGS
 enum Led_Numb
 {
 	LED_0,
@@ -29,7 +30,7 @@ struct Event
 
 } ;
 
-unsigned long int RTC_Time(void);
+cofunc unsigned long int RTC_Time(void);
 
 
 /*
@@ -46,8 +47,10 @@ main()
 	int *vacio;
 	unsigned long int time;
 	char tarea;
+	char tarea_s [1];
 	int i;
 	char frec;
+	char x_s [1];
 	char x;
 	char w[15];
 	char borrar [15];
@@ -60,85 +63,105 @@ main()
 
 
 	HW_init();
-	printf("Elija la tarea a realizar\n\t 1 = Fijar Hora del reloj\n\t 2 = Consultar Hora \n\t 3  = Agregar Evento al calendario \n\t 4 = Quitar Evento del calendario \n\t 5 = Consultar lista de eventos activos del calendario");
-	tarea = getchar ();                        //---------------------------------WARNING---------------------------------------
-   printf("after getchar");
+
+	while(1)
+	{
+
 	costate // Usuario
 	{
+		printf("\n Elija la tarea a realizar\n\t 1 = Fijar Hora del reloj\n\t 2 = Consultar Hora \n\t 3  = Agregar Evento al calendario \n\t 4 = Quitar Evento del calendario \n\t 5 = Consultar lista de eventos activos del calendario\n\t");
+      waitfor ( getswf(tarea_s));
+		tarea = atoi (tarea_s);
 		switch (tarea)
 		{
 			case(1)://fijar hora
-			time = RTC_Time();
-			write_rtc (time);
+				wfd time = RTC_Time();
+				write_rtc (time);
+				printf("\n Guardado \n");
 			break;
 
 			case(2)://consultar hora
-			time = read_rtc();
-			mktm ( &tiempo_actual, time); //---------------------------------WARNING---------------------------------------
-			printf ("dia %d ,mes %d, ano %d \n hora %d, minutos %d, segundos %d \n" ,tiempo_actual.tm_year, tiempo_actual.tm_mon, tiempo_actual.tm_mday, tiempo_actual.tm_hour, tiempo_actual.tm_min, tiempo_actual.tm_sec);
+				time = read_rtc();
+				mktm ( &tiempo_actual, time);
+				printf ("\n Fecha:%d/%d/%d \n Hora %d:%d:%d \n" ,tiempo_actual.tm_mday, tiempo_actual.tm_mon, tiempo_actual.tm_year + 1900, tiempo_actual.tm_hour, tiempo_actual.tm_min, tiempo_actual.tm_sec);
 			break;
 
 			case (3)://agregar evento
-			for ( i = 0 ; i<CANTIDAD_EVENTOS; i++)
-				{
-					vacio = &evento[i].numero ; //vacio apunta a la direccion de evento.numero i   ---------------------------------ERROR---------------------------------------
-					if (vacio == VACIO) //Cuando el lugar esta libre anoto el evento
+				for ( i = 0 ; i<CANTIDAD_EVENTOS; i++)
 					{
-						evento[i].time = RTC_Time();
-						evento[i].numero = i;
-						evento[i].command = PRENDER;
-						printf ("Elija un led para el evento\n");
-						x = getchar ();
-						if (x < 8)
-						{
-							evento[i].param = x;      // x es el led que desea prender.
-						}
-						else
-						{
-							evento[i].numero  = VACIO;        //---------------------------------WARNING---------------------------------------
-							printf("ERROR!! el evento no ha sido guardado \n");
-							break;
-						}
 
-						printf ("Elija frecuencia para prender y apagar el led ms \n");
-						gets (w);
-						frec = atoi (w);            //---------------------------------ERROR---------------------------------------
-						evento[i].frec = frec;      // frecuencia con la que desea prender y apagar el led   ---------------------------------ERROR---------------------------------------
-						i = CANTIDAD_EVENTOS;
+						//vacio = &evento[i].numero ; //vacio apunta a la direccion de evento.numero i
+						if (evento[i].numero == VACIO) //Cuando el lugar esta libre anoto el evento
+						{
 
+							wfd evento[i].time = RTC_Time();
+							evento[i].numero = i;
+							evento[i].command = PRENDER;
+							printf ("Elija un led para el evento\n");
+							waitfor (getswf(x_s));
+							x = atoi(x_s);
+
+							if (x < 8)
+							{
+								evento[i].param = x;      // x es el led que desea prender.
+							}
+							else
+							{
+								evento[i].numero  = VACIO;
+								printf("ERROR!! el evento no ha sido guardado \n");
+								break;
+							}
+
+							printf ("Elija frecuencia para prender y apagar el led ms \n");
+							waitfor (getswf (w));
+							frec = atoi (w);
+							evento[i].frec = frec;      // frecuencia con la que desea prender y apagar el led
+                     printf("Evento %d guradado/t%d",evento[i].numero,i);
+                     i = CANTIDAD_EVENTOS;
+
+
+						}
 					}
-				}
 			break;
 
-			case (4): // Borrar evento
-			printf("Elija el numero del evento a borrar \n");
-			gets(borrar);
-			evento_borrar = atoi(borrar);
-			if (evento_borrar < CANTIDAD_EVENTOS)
-			{
-				if(evento[evento_borrar].numero =! VACIO)
+			case (4): // Borrar evento   ARREGLAR!!!!!!!!!
+				printf("Elija el numero del evento a borrar \n");
+				waitfor (getswf(borrar));
+				evento_borrar = atoi(borrar);
+				if (evento_borrar < CANTIDAD_EVENTOS)
 				{
-					printf("Evento borrado\n");
-					evento[evento_borrar].numero =  VACIO;   //---------------------------------WARNING---------------------------------------
+					if(evento[evento_borrar].numero != VACIO)
+					{
+						printf("Evento borrado\n");
+						evento[evento_borrar].numero =  VACIO;
 
+					}
+					else
+					{
+						printf("No existe evento\n");
+					}
 				}
 				else
 				{
-					printf("No existe evento\n");
+					printf("ERROR \n");
+					break;
 				}
-			}
-			else
-			{
+			break;
+
+			case(5)://Despelga los eventos en pantalla
+				for ( i = 0 ; i<CANTIDAD_EVENTOS; i++)
+					{
+						if (evento[i].numero != VACIO) //Cuando el lugar esta libre anoto el evento
+						{
+							printf("\nEvento %d:\n\tFecha:%d/%d/%d \n\t Hora %d:%d:%d\n\tLed: %d\t Frec.:%d ms\n" ,i,tiempo_actual.tm_mday, tiempo_actual.tm_mon, tiempo_actual.tm_year, tiempo_actual.tm_hour, tiempo_actual.tm_min, tiempo_actual.tm_sec,evento[i].param),evento[i].frec;
+						}
+					}
+			break;
+
+
+			default:
 				printf("ERROR \n");
 				break;
-			}
-			break;
-/*---------------------------------------------------------------Hacer-----------------------------------------------------------------------------
-			case(4)://Despelga los eventos en pantalla
-
-			break;
-*/
-
 		}
 	}
 
@@ -157,9 +180,10 @@ main()
 	}
 */
 
+	}
 }
 
-unsigned long int RTC_Time(void)
+cofunc unsigned long int RTC_Time(void)
 {
 	struct tm tiempo;
 	char segundos[15];
@@ -170,26 +194,26 @@ unsigned long int RTC_Time(void)
 	char ano[15];
 
 	printf ("Ingrese Ano \n");
-	gets(ano);
+	waitfor (getswf(ano));
 	printf ("Ingrese Mes \n");
-	gets(mes);
+	waitfor (getswf(mes));
 	printf ("Ingrese Dia \n");
-	gets(dia);
+	waitfor (getswf(dia));
 	printf ("Ingrese hora \n");
-	gets(hora);
+	waitfor (getswf(hora));
 	printf ("Ingrese Minutos \n");
-	gets(minutos);
+	waitfor (getswf(minutos));
 	printf ("Ingrese segundos \n");
-	gets(segundos);
+	waitfor (getswf(segundos));
 
 	tiempo.tm_sec = atoi (segundos);
 	tiempo.tm_min = atoi (minutos);
 	tiempo.tm_hour = atoi (hora);
 	tiempo.tm_mday = atoi (dia);
 	tiempo.tm_mon = atoi (mes);
-	tiempo.tm_year = atoi (ano);
+	tiempo.tm_year = atoi (ano) - 1900;
 
-	return mktime(&tiempo);        //---------------------------------WARNING---------------------------------------
+	return mktime(&tiempo);
 }
 
 
