@@ -38,8 +38,8 @@ main()
 	struct tm tiempo_actual;
 	int *vacio;
 	unsigned long int time;
-		unsigned long int time_evento;
-			unsigned long int time_2;
+	unsigned long int time_evento;
+	unsigned long int time_2;
 	char tarea;
 	char tarea_s [1]; // los _s son para usar la funcion gtswf y luego pasarlos por medio de atoi a la variable sin _s
 	int i;
@@ -64,7 +64,7 @@ main()
 
 
 	HW_init();
-	programo_rtc;
+	//programo_rtc;
 
 	while(1)
 	{
