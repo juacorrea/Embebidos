@@ -8,7 +8,7 @@
 #define MAX_MIN_SEC					59
 //#define ESC 						 99
 /*** EndHeader */
-
+//
 
 //-------------------CHEQUEAR DIA (31-30-29)----------------------------------------------------
 /*La funcion devuelve uno si existe ese dia en ese mes, devuelve 0 si no es posible
