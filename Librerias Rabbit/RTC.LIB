@@ -1,0 +1,403 @@
+/*** BeginHeader */
+#use IO.LIB
+#define MAX_ANO						2100
+#define MIN_ANO                     2018
+#define MAX_MES						12
+#define MAX_DIA						31
+#define MAX_HORA					23
+#define MAX_MIN_SEC					59
+//#define ESC 						 99
+/*** EndHeader */
+
+
+//-------------------CHEQUEAR DIA (31-30-29)----------------------------------------------------
+/*La funcion devuelve uno si existe ese dia en ese mes, devuelve 0 si no es posible
+la funcion chequea por medio de un switch que mes es, y dentro de este mes chequea
+la cantidad de dias maximos, tambien chequea si ese ano es bisiesto, asi se si
+febrero tiene 29 dias o 28 */
+/*** BeginHeader RTC_CHEQUEO_DIA  */
+int RTC_CHEQUEO_DIA (char tm_mon,char tm_mday,char tm_year);
+/*** EndHeader */
+int RTC_CHEQUEO_DIA (char tm_mon,char tm_mday, char tm_year) //DEVUELVE UNO SI ESTA BIEN, 0 SI ESTA MAL
+{
+	switch (tm_mon)             //fijo si el dia es valido en ese mes
+	{
+		case (1):
+		if (tm_mday <= 31)
+		{
+			return 1 ;
+		}
+			return 0;
+
+		case (2):
+
+		if((tm_year % 4 == 0 && tm_year % 100 != 0) || tm_year % 400 == 0)
+		{
+				if ( tm_mday <= 29)
+				{
+					return 1 ;
+				}
+		}
+		if ( tm_mday <= 28)
+		{
+			return 1 ;
+		}
+			return 0;
+
+		case (3):
+		if ( tm_mday <= 31)
+		{
+			return 1 ;
+		}
+			return 0;
+
+		case (4):
+		if ( tm_mday <= 30)
+		{
+			return 1 ;
+		}
+			return 0;
+
+		case (5):
+		if ( tm_mday <= 31)
+		{
+			return 1 ;
+		}
+			return 0;
+
+		case (6):
+		if ( tm_mday <= 30)
+		{
+			return 1 ;
+		}
+			return 0;
+
+		case (7):
+		if ( tm_mday <= 31)
+		{
+			return 1 ;
+		}
+			return 0;
+
+		case (8):
+		if ( tm_mday <= 31)
+		{
+			return 1 ;
+		}
+			return 0;
+
+		case (9):
+		if ( tm_mday <= 30)
+		{
+			return 1 ;
+		}
+			return 0;
+
+		case (10):
+		if ( tm_mday <= 31)
+		{
+			return 1 ;
+		}
+			return 0;
+
+		case (11):
+		if ( tm_mday <= 30)
+		{
+			return 1 ;
+		}
+			return 0;
+
+		case (12):
+		if ( tm_mday <= 31)
+		{
+			return 1 ;
+		}
+			return 0;
+
+	}
+}
+//--------------------------------------------------------------------------------------------
+
+//-------------------Escribir en RTC-------------------------------
+/* La funcion le solicita al usuario que ingrese los valores del evento,
+chequea que cada valor asignado sea valido, ya sea en la cantidad de digitos
+o que no sea en fechas pasadas, tambien le permite al usuario cancelar
+el ingreso del evento por medio de 'ESC'.
+La funcion devuelve el valor de la fecha del evento, o devuelve 0 si el
+el usuario cancelo el ingreso del evento.*/
+/*** BeginHeader RTC_WRITE_Time */
+cofunc unsigned long int 	RTC_WRITE_Time(void);
+/*** EndHeader */
+cofunc unsigned long int	RTC_WRITE_Time(void)
+{
+	struct tm tiempo_actual;
+	struct tm tiempo;
+	char segundos[15];
+	char minutos[15];
+	char hora[15];
+	char dia[15];
+	char mes[15];
+	char ano[15];
+	int error_var;
+	unsigned long int time;
+	unsigned long int tiempo_devolver;
+	int chequeo_dia;
+	char chequeo_dia_para_func;
+	char chequeo_mes_para_func;
+	int vueltas;
+	char chequeo_ano_para_func;
+	vueltas = 0;
+	
+
+	error_var = 0;
+
+	while (vueltas < 6)
+	{
+		switch (error_var)
+		{
+				case (0):
+				time = read_rtc();
+				mktm ( &tiempo_actual, time);
+				printf ("Ingrese Ano \n");
+				waitfor (getswf(ano));
+				
+				/*if (tiempo.tm_year == ESC)
+				{
+					tiempo_devolver = 0;
+				}
+				
+				*/
+				
+				if (atoi (ano) <= MAX_ANO && atoi (ano) >= MIN_ANO)
+				{
+					tiempo.tm_year = atoi (ano) - 1900;
+
+					if (tiempo.tm_year >= tiempo_actual.tm_year)
+					{
+						error_var = 1;
+						printf ("\n\t Ano Guardado\n ");
+					}
+
+				}
+				if(error_var == 0)
+				{
+					printf ("\n\t El ano ingresado no es valido, ingrese ano nuevamente \n ");
+					break;
+				}
+
+				case (1):
+				time = read_rtc();
+				mktm ( &tiempo_actual, time);
+				printf ("Ingrese Mes \n");
+				waitfor (getswf(mes));
+				tiempo.tm_mon = atoi (mes);
+			
+/*				if (tiempo.tm_mon == ESC)
+				{
+					tiempo_devolver = 0;
+				}*/
+				if (tiempo.tm_mon <= MAX_MES)
+				{
+					if (tiempo.tm_year == tiempo_actual.tm_year )
+					{
+						if (tiempo.tm_mon >= tiempo_actual.tm_mon)
+						{
+							error_var = 2;
+							printf ("\n\t Mes Guardado\n ");
+						}
+					}
+					else if ( tiempo.tm_year > tiempo_actual.tm_year )
+					{
+						error_var = 2 ;
+						printf ("\n\t Mes Guardado\n ");
+					}
+
+				}
+				if(error_var == 1)
+				{
+					printf ("\n\t El Mes ingresado no es valido, ingrese Mes nuevamente \n ");
+					break;
+				}
+
+				case (2):
+				time = read_rtc();
+				mktm ( &tiempo_actual, time);
+				printf ("Ingrese Dia \n");
+				waitfor (getswf(dia));
+				tiempo.tm_mday = atoi (dia);
+				
+/*				if (tiempo.tm_mday == ESC)
+				{
+					tiempo_devolver = 0;
+				}*/
+
+				if (tiempo.tm_mday <= MAX_DIA)
+				{
+						chequeo_dia_para_func = tiempo.tm_mday;
+						chequeo_mes_para_func = tiempo.tm_mon;
+						chequeo_ano_para_func = tiempo.tm_year;
+						chequeo_dia = RTC_CHEQUEO_DIA (chequeo_mes_para_func, chequeo_dia_para_func, chequeo_ano_para_func);
+
+						if (chequeo_dia == 1 )
+						{
+									if (tiempo.tm_year == tiempo_actual.tm_year)
+									{
+										if (tiempo.tm_mon == tiempo_actual.tm_mon)
+										{
+											if (tiempo.tm_mday >= tiempo_actual.tm_mday)
+											{
+												error_var = 3;
+												printf ("\n\t Dia Guardado\n ");
+											}
+										}
+									}
+									else if ( tiempo.tm_year > tiempo_actual.tm_year )
+									{
+										error_var = 3;
+										printf ("\n\t Dia Guardado\n ");
+									}
+									else if (tiempo.tm_mon > tiempo_actual.tm_mon)
+									{
+										error_var = 3;
+										printf ("\n\t Dia Guardado\n ");
+									}
+
+						}
+
+					}
+					 if(error_var == 2)
+					{
+						printf ("\n\t El Dia ingresado no es valido, ingrese Dia nuevamente \n ");
+						break;
+					}
+
+
+				case (3):
+				time = read_rtc();
+				mktm ( &tiempo_actual, time);
+				printf ("Ingrese hora \n");
+				waitfor (getswf(hora));
+				tiempo.tm_hour = atoi (hora);
+				
+/*				if (tiempo.tm_hour	== ESC)
+				{
+					tiempo_devolver = 0;
+				}*/
+				if (tiempo.tm_hour <= MAX_HORA)
+				{
+					if (tiempo.tm_year == tiempo_actual.tm_year)
+					{
+						if (tiempo.tm_mon == tiempo_actual.tm_mon)
+						{
+							if (tiempo.tm_mday == tiempo_actual.tm_mday)
+							{
+								if (tiempo.tm_hour >= tiempo_actual.tm_hour)
+								{
+									error_var = 4;
+									printf ("\n\t Hora Guardada\n ");
+								}
+							}
+						}
+					}
+					else if ( tiempo.tm_year > tiempo_actual.tm_year )
+					{
+						error_var = 4;
+						printf ("\n\t Hora Guardada\n ");
+					}
+					else if (tiempo.tm_mon > tiempo_actual.tm_mon)
+					{
+						error_var = 4;
+						printf ("\n\t Hora Guardada\n ");
+					}
+					else if (tiempo.tm_mday > tiempo_actual.tm_mday)
+					{
+						error_var = 4;
+						printf ("\n\t Hora Guardada\n ");
+					}
+
+				}
+				if(error_var == 3)
+				{
+					printf ("\n\t La Hora ingresada no es valida, ingrese Hora nuevamente \n ");
+					break;
+				}
+
+				case (4):
+				time = read_rtc();
+				mktm ( &tiempo_actual, time);
+				printf ("Ingrese Minutos \n");
+				waitfor (getswf(minutos));
+				tiempo.tm_min = atoi (minutos);
+				
+/*				if (tiempo.tm_min	== ESC)
+				{
+					tiempo_devolver = 0;
+
+				}*/
+				if (tiempo.tm_min < MAX_MIN_SEC)
+				{
+					if (tiempo.tm_year == tiempo_actual.tm_year)
+					{
+						if (tiempo.tm_mon == tiempo_actual.tm_mon)
+						{
+							if (tiempo.tm_mday == tiempo_actual.tm_mday)
+							{
+								if (tiempo.tm_hour == tiempo_actual.tm_hour)
+								{
+									if (tiempo.tm_min >= tiempo_actual.tm_min)
+									{
+										error_var = 5 ;
+										printf ("\n\t Minutos Guardados\n ");
+									}
+								}
+							}
+						}
+					}
+					else if ( tiempo.tm_year > tiempo_actual.tm_year )
+					{
+						error_var = 5;
+						printf ("\n\t Minutos Guardados\n ");
+					}
+					else if (tiempo.tm_mon > tiempo_actual.tm_mon)
+					{
+						error_var = 5;
+						printf ("\n\t Minutos Guardados\n ");
+					}
+					else if (tiempo.tm_mday > tiempo_actual.tm_mday)
+					{
+						error_var = 5;
+						printf ("\n\t Minutos Guardados\n ");
+					}
+					else if (tiempo.tm_hour > tiempo_actual.tm_hour)
+					{
+						error_var = 5;
+						printf ("\n\t Minutos Guardados\n ");
+					}
+
+				}
+				if(error_var == 4)
+				{
+					printf ("\n\t El minuto ingresado no es valido, ingrese minuto nuevamente \n ");
+					break;
+				}
+
+				case (5):
+				tiempo.tm_sec  = 0;
+				error_var ++;
+				tiempo_devolver = mktime(&tiempo);
+				vueltas = 6;
+				
+				
+				break;
+
+
+
+
+		}
+	}
+
+	tiempo_devolver = mktime(&tiempo);
+	return tiempo_devolver;
+}
+
+//--------------------------------------------------------------------------------------------------------------------
