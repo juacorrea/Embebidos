@@ -31,7 +31,7 @@ struct Event
 	unsigned long time;
 
 } ;
-void programo_rtc(void);
+//void programo_rtc(void);
 
 main()
 {
@@ -73,6 +73,9 @@ main()
 		{
 //------------------- MENU DE USUARIO ---------------------------------------
 			printf("\n Elija la tarea a realizar\n\t 1 = Fijar Hora del reloj\n\t 2 = Consultar Hora \n\t 3  = Agregar Evento al calendario \n\t 4 = Quitar Evento del calendario \n\t 5 = Consultar lista de eventos activos del calendario\n\t");
+			time = read_rtc();
+			mktm ( &tiempo_actual, time);
+			printf ("\n Fecha:%d/%d/%d \n Hora %d:%d:%d \n" ,tiempo_actual.tm_mday, tiempo_actual.tm_mon, tiempo_actual.tm_year + 1900, tiempo_actual.tm_hour, tiempo_actual.tm_min, tiempo_actual.tm_sec);
 			waitfor ( getswf(tarea_s));
 			tarea = atoi (tarea_s);
 //----------------------------------------------------------------------------
