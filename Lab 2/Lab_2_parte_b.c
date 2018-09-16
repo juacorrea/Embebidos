@@ -32,9 +32,10 @@ struct Event
 
 } ;
 //void programo_rtc(void);
+struct Event evento[CANTIDAD_EVENTOS+1];
 
 main()
-{
+{	
 	struct tm tiempo_actual;
 	int *vacio;
 	unsigned long int time;
@@ -50,7 +51,6 @@ main()
 	char borrar [15];
 	int evento_borrar;
 	char error;
-	struct Event evento[CANTIDAD_EVENTOS];
 	int hay_lugar;
     int t; //variable a utilzar para colocar deafult en frecuencia y led.
     char led;
@@ -109,18 +109,22 @@ nuevamente, se utiliza la varibale hay_lugar para determinar si se puede agregar
 (antes de pedirle al usuario que ingrese todos los datos*/
 				case (3):
 				hay_lugar = 0;
-					for ( i = 0 ; i<CANTIDAD_EVENTOS; i++)
+					for ( i = 0 ; i<(CANTIDAD_EVENTOS); i++)
 						{
 
 							if (evento[i].numero == VACIO) //Cuando el lugar esta libre anoto el evento
-								
+
 								//PROBLEMA AL GUARDAR DATOS EN LA STRUCT EVENTO
-								wfd evento[i].time = RTC_WRITE_Time();    // <------ERROR
-								//wfd time = RTC_WRITE_Time();
-								printf("\n%lu de time\n",time);
-								printf("\n%lu del evento[i].time\n",evento[i].time);
-								
-								
+
+								wfd time = RTC_WRITE_Time();
+								printf("\n timetime2: %d\n", time);
+                        
+								 evento[i].time = time; 
+								// time = RTC_WRITE_Time();
+								//printf("\n%lu de time\n",time);
+								//printf("\n %lu del evento[i].time\n",evento[i].time);
+
+
 								if (time == 0)
 								{
 									printf ("\n Evento no configurado \n");
@@ -191,7 +195,7 @@ nuevamente, se utiliza la varibale hay_lugar para determinar si se puede agregar
 								hay_lugar = 1;
 								}
 							}
-						}
+
 						if (hay_lugar == 0)
 						{
 							printf("\n No hay espacio de memoria suficiente  \t\n");
