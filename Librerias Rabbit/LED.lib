@@ -27,6 +27,7 @@ cofunc void LED_Prender_Led_frec_cant_veces(char led, int frec)
 {
 
 		int i, i_1;
+		frec = 1000/frec;
 		for (i=0;i<VECES_LED;i++)
 		{
 			LED_SET(led);
