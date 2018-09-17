@@ -43,11 +43,12 @@ main()
 	unsigned long int time_2;
 	char tarea;
 	char tarea_s [1]; // los _s son para usar la funcion gtswf y luego pasarlos por medio de atoi a la variable sin _s
-	int i;
+	int i, i_1;
 	int frec;
 	char x_s [4];
 	char x;
-	char w[15];
+	char w_s[4];
+	char w;
 	char borrar [15];
 	int evento_borrar;
 	char error;
@@ -113,88 +114,70 @@ nuevamente, se utiliza la varibale hay_lugar para determinar si se puede agregar
 						{
 
 							if (evento[i].numero == VACIO) //Cuando el lugar esta libre anoto el evento
-
-								//PROBLEMA AL GUARDAR DATOS EN LA STRUCT EVENTO
-
+							{
+								
+								i_1 = i;
 								wfd time = RTC_WRITE_Time();
-								printf("\n timetime2: %d\n", time);
-                        
-								 evento[i].time = time; 
-								// time = RTC_WRITE_Time();
-								//printf("\n%lu de time\n",time);
-								//printf("\n %lu del evento[i].time\n",evento[i].time);
-
-
+								i = i_1;
+								evento[i].time = time; 
+								 
 								if (time == 0)
 								{
 									printf ("\n Evento no configurado \n");
 									evento[i].numero = VACIO;
 									break;
-								}
+								}    
 								evento[i].numero = i;
-								evento[i].command = PRENDER;
+								evento[i].command = PRENDER;  
 								printf ("Elija un led para el evento\n");
+								
+								error = 0;								
 								while (error < 1)
 								{
+									i_1 = i;
 									waitfor (getswf(x_s));
 									x = atoi(x_s);
-								   t= 0;
-								   if (x<8)
-								   {
-										t=1;
-								   }
-									switch (t)
-									{
-										case (1):
-
-										evento[i].numero  = i;
-										evento[i].param = x;      // x es el led que desea prender.
-										error ++ ;
-
-										break;
-
-										default:
-										evento[i].numero  = VACIO;
-										printf("\n\t El Led no es valido, ingreselo nuevamente \n");
-
-
-
-									}
-								}
-								error = 0;
+									i = i_1;
+									if (x<8 && x>=0)
+										{
+											evento[i].param = x;
+											printf("\n\t Led OK\n");
+											error = 1;
+										}
+									else
+										{
+											printf("\n\t El Led no es valido, ingrese un numero del 0 al 7 \n");
+											error = 0;
+										}
+								}   
+															
 								printf ("\n Elija frecuencia para prender y apagar el led \n elegir entre (1-9)*0.1s\n");
+								error = 0;
 								while (error <1 )
 								{
-
-									waitfor (getswf (w));
-									frec = atoi (w);
-									t = 0;
-									if (frec <10)
+									i_1 = i;
+									waitfor (getswf (w_s));
+									frec = atoi (w_s);
+									i = i_1;
+									//t = 0;
+									if (frec <10 && frec >=0)
 								   {
-										t=1;
-								   }
-									switch (t)
-									{
-										case (1):
-
 										evento[i].numero  = i;
 										evento[i].frec = frec;      // frecuencia con la que desea prender y apagar el led
-										error ++ ;
-										break;
-
-										default:
-										evento[i].numero  = VACIO;
-										printf("\n\t El Led no es valido, ingreselo nuevamente \n");
-
-
-
-									}
-
-								printf("\n Evento %d guradado \t%d\n",evento[i].numero,i);
-								i = CANTIDAD_EVENTOS;
-								hay_lugar = 1;
+										printf("\n\t Frecuencia OK\n");
+										printf("\n Evento %d guradado \t%d\n",evento[i].numero,i);
+										i = CANTIDAD_EVENTOS;
+										hay_lugar = 1;
+										error = 1;
+								   }
+								   else
+								   {
+									   printf("\n\t La frecuencia no es valida, elegir entre (1-9)*0.1s \n");
+									   error = 0;
+								   }								
 								}
 							}
+						}
 
 						if (hay_lugar == 0)
 						{
@@ -210,25 +193,41 @@ si no existe puede ser porque no hay un evento configurado o porque
 exede la cantidad de eventos maxima (CANTIDAD_EVENTOS).*/
 				case (4):
 					printf("Elija el numero del evento a borrar \n");
-					waitfor (getswf(borrar));
-					evento_borrar = atoi(borrar);
-					if (evento_borrar < CANTIDAD_EVENTOS)
+					error = 0;
+					while (error <1 )
 					{
-						if(evento[evento_borrar].numero != VACIO)
+						waitfor (getswf(borrar));
+						evento_borrar = atoi(borrar);
+						if (evento_borrar < CANTIDAD_EVENTOS && CANTIDAD_EVENTOS>= 0)
 						{
-							printf("Evento borrado\n");
-							evento[evento_borrar].numero =  VACIO;
+							if(evento[evento_borrar].numero != VACIO)
+							{
+								printf("Evento borrado\n");
+								evento[evento_borrar].numero =  VACIO;
+								error = 1;
 
+							}
+							else
+							{
+								printf("No existe evento\n Lista de eventos:");
+								for ( i = 0 ; i<CANTIDAD_EVENTOS; i++)
+									{
+										if (evento[i].numero != VACIO) 
+										{								
+											time_evento = evento[i].time;
+											mktm ( &tiempo_actual, time_evento);
+											printf("\nEvento %d:\n\tFecha:%d/%d/%d \n\t Hora %d:%d:%d\n\tLed: %d\t Frec.:%d ms\n" ,i,tiempo_actual.tm_mday, tiempo_actual.tm_mon, tiempo_actual.tm_year+1900, tiempo_actual.tm_hour, tiempo_actual.tm_min, tiempo_actual.tm_sec,evento[i].param),evento[i].frec;
+										}
+									
+									}
+								error = 0;
+							}
 						}
 						else
 						{
-							printf("No existe evento\n");
+							printf("\n\t El numero de evento no es valido, ingrese uno del 0 al 7 \n");
+							break;
 						}
-					}
-					else
-					{
-						printf("ERROR \n");
-						break;
 					}
 				break;
 //-------------------------------------------------------------------------------
@@ -237,8 +236,8 @@ exede la cantidad de eventos maxima (CANTIDAD_EVENTOS).*/
 				case(5):
 					for ( i = 0 ; i<CANTIDAD_EVENTOS; i++)
 						{
-							if (evento[i].numero != VACIO) //Cuando el lugar esta libre anoto el evento
-							{
+							if (evento[i].numero != VACIO) 
+							{								
 								time_evento = evento[i].time;
 								mktm ( &tiempo_actual, time_evento);
 								printf("\nEvento %d:\n\tFecha:%d/%d/%d \n\t Hora %d:%d:%d\n\tLed: %d\t Frec.:%d ms\n" ,i,tiempo_actual.tm_mday, tiempo_actual.tm_mon, tiempo_actual.tm_year+1900, tiempo_actual.tm_hour, tiempo_actual.tm_min, tiempo_actual.tm_sec,evento[i].param),evento[i].frec;
@@ -248,7 +247,7 @@ exede la cantidad de eventos maxima (CANTIDAD_EVENTOS).*/
 //------------------------------------------------------------------------------
 
 				default:
-					printf("ERROR \n");
+					printf("ERROR numero equivocado\n");
 					break;
 			}
 		}
@@ -256,9 +255,9 @@ exede la cantidad de eventos maxima (CANTIDAD_EVENTOS).*/
 /*Prende el led rojo durante 400ms, y lo apaga durande 800ms*/
 		costate
 		{
-			waitfor(DelayMs(800L));	//Espero 800ms para prender el led rojo
+			waitfor(DelayMs(800));	//Espero 800ms para prender el led rojo
 			RED_LED_SET();			//Prendo led rojo
-			waitfor(DelayMs(400L));	//Espero 400ms para apagar el led rojo
+			waitfor(DelayMs(400));	//Espero 400ms para apagar el led rojo
 			RED_LED_RESET();		//Apago led rojo
 		}
 //-----------------------------------------------------------------------------------------
@@ -266,7 +265,7 @@ exede la cantidad de eventos maxima (CANTIDAD_EVENTOS).*/
 
 //	--------------------------------------ALARMA--------------------------------------------------
 	costate
-		{                     //???????????????????????????????????????????????????????FALTA PROBAR
+		{                  
 			time_2 = read_rtc();
 
 			for(i = 0; i<CANTIDAD_EVENTOS;i++)
@@ -276,10 +275,12 @@ exede la cantidad de eventos maxima (CANTIDAD_EVENTOS).*/
 				{
 					if (evento[i].time == time_2)
 					{
-						evento[i].numero = VACIO;
+						printf("\n Evento!! %d\n",evento[i].numero);
 						led = evento[i].param;
 						frecuencia = evento[i].frec;
 						wfd LED_Prender_Led_frec_cant_veces(led,  frecuencia);
+						evento[i].numero = VACIO;
+						
 					}
 				}
 			}

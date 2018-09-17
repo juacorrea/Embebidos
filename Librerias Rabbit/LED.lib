@@ -1,7 +1,7 @@
 /*** BeginHeader */
 
 #use IO.LIB
-#define CANTIDAD_VECES    10
+#define VECES_LED   20
 #define RED_LED			5
 
 #define LED_PORT		PORT_A
@@ -26,13 +26,17 @@ cofunc void LED_Prender_Led_frec_cant_veces(char led, int frec);
 cofunc void LED_Prender_Led_frec_cant_veces(char led, int frec)
 {
 
-		int i;
-		for (i=0;i<CANTIDAD_VECES;i++)
+		int i, i_1;
+		for (i=0;i<VECES_LED;i++)
 		{
-			waitfor(DelayMs((long int )frec));
 			LED_SET(led);
-			waitfor(DelayMs((long int )frec));
+			i_1 = i;
+			waitfor(DelayMs(frec));
+			i = i_1;
 			LED_RESET(led);
+			i_1 = i;
+			waitfor(DelayMs(frec));
+			i = i_1;
 		}
 	return;
 }
