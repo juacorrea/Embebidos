@@ -1,4 +1,18 @@
+
 /*** BeginHeader */
+#use Utilities.LIB
+
+#define TCPCONFIG 0
+#define USE_ETHERNET		1
+#define MY_IP_ADDRESS "10.10.6.100"
+#define MY_NETMASK "255.255.255.0"
+#define MY_GATEWAY "10.10.6.2"
+
+
+
+#use "dcrtcp.lib"
+
+#define STDIO_ENABLE_LONG_STRINGS
 
 #define INPUT_DIR				0
 #define OUTPUT_DIR				1
@@ -17,6 +31,17 @@
 #define PIC_PROTOCOL_BAUDRATE	9600
 
 #define CANTIDAD_VECES 				10
+
+//#define TCPCONFIG 0
+
+
+
+#memmap xmem
+#use "dcrtcp.lib"
+
+#define PORT 7
+
+tcp_Socket echosock;
 
 enum portName
 {
@@ -41,6 +66,17 @@ enum bitNumber
 	BIT_6,
 	BIT_7
 };
+enum Led_Numb
+{
+	LED_0,
+	LED_1,
+	LED_2,
+	LED_3,
+	LED_4,
+	LED_5,
+	LED_6,
+	LED_7,
+};
 /*** EndHeader */
 
 /*** BeginHeader HW_init */
@@ -56,7 +92,7 @@ void HW_init( void )
 	BitWrPortI(PBDDR, &PBDDRShadow, INPUT_DIR, BIT_3); 	//Entrada 1
 	BitWrPortI(PBDDR, &PBDDRShadow, INPUT_DIR, BIT_4); 	//Entrada 2
 	BitWrPortI(PBDDR, &PBDDRShadow, INPUT_DIR, BIT_5); 	//Entrada 3
-	
+
 	//PORT E --------------------------------------------------------------------------------------------------------------
 	BitWrPortI(PEDDR, &PEDDRShadow, OUTPUT_DIR, BIT_5); //Entrada 5, Led Rojo
 	//---------------------------------------------------------------------------------------------------------------------
@@ -68,7 +104,11 @@ void HW_init( void )
 
 	// Puerto Serie PIC
 	serCopen(PIC_PROTOCOL_BAUDRATE);
-}
+
+	printf("Iniciando Socket\n");
+	sock_init();
+	printf("Iniciado\n");
+	}
 
 /*** BeginHeader IO_getInput */
 char IO_getInput( enum portName p_port, enum bitNumber p_pin );

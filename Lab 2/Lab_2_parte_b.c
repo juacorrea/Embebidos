@@ -240,7 +240,7 @@ exede la cantidad de eventos maxima (CANTIDAD_EVENTOS).*/
 							{								
 								time_evento = evento[i].time;
 								mktm ( &tiempo_actual, time_evento);
-								printf("\nEvento %d:\n\tFecha:%d/%d/%d \n\t Hora %d:%d:%d\n\tLed: %d\t Frec.:%d ms\n" ,i,tiempo_actual.tm_mday, tiempo_actual.tm_mon, tiempo_actual.tm_year+1900, tiempo_actual.tm_hour, tiempo_actual.tm_min, tiempo_actual.tm_sec,evento[i].param),evento[i].frec;
+								printf("\nEvento %d:\n\tFecha:%d/%d/%d \n\t Hora %d:%d:%d\n\tLed: %d\t Frec.:%d ms\n" ,i,tiempo_actual.tm_mday, tiempo_actual.tm_mon, tiempo_actual.tm_year+1900, tiempo_actual.tm_hour, tiempo_actual.tm_min, tiempo_actual.tm_sec,evento[i].param,evento[i].frec);
 							}
 						}
 				break;
