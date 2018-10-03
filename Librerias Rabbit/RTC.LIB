@@ -130,9 +130,9 @@ el ingreso del evento por medio de 'ESC'.
 La funcion devuelve el valor de la fecha del evento, o devuelve 0 si el
 el usuario cancelo el ingreso del evento.*/
 /*** BeginHeader RTC_WRITE_Time */
-cofunc unsigned long int 	RTC_WRITE_Time(void);
+cofunc unsigned long int 	RTC_WRITE_Time(int (*func_get)(), void (*func_print)());
 /*** EndHeader */
-cofunc unsigned long int	RTC_WRITE_Time(void)
+cofunc unsigned long int	RTC_WRITE_Time(int (*func_get)(), void (*func_print)())
 {
 	struct tm tiempo_actual;
 	struct tm tiempo;
@@ -162,9 +162,8 @@ cofunc unsigned long int	RTC_WRITE_Time(void)
 			case (0):
 			time = read_rtc();
 			mktm ( &tiempo_actual, time);
-			printf ("Ingrese Ano \n");
-			waitfor (getswf(ano));
-			
+			(*func_print) ("Ingrese Ano \n");
+			waitfor ((*func_get)(ano));
 			/*if (tiempo.tm_year == ESC)
 			{
 				tiempo_devolver = 0;
@@ -179,21 +178,21 @@ cofunc unsigned long int	RTC_WRITE_Time(void)
 				if (tiempo.tm_year >= tiempo_actual.tm_year)
 				{
 					error_var = 1;
-					printf ("\n\t Ano Guardado\n ");
+					(*func_print) ("\n\t Ano Guardado\n ");
 				}
 
 			}
 			if(error_var == 0)
 			{
-				printf ("\n\t El ano ingresado no es valido, ingrese ano nuevamente \n ");
+				(*func_print) ("\n\t El ano ingresado no es valido, ingrese ano nuevamente \n ");
 				break;
 			}
 
 			case (1):
 			time = read_rtc();
 			mktm ( &tiempo_actual, time);
-			printf ("Ingrese Mes \n");
-			waitfor (getswf(mes));
+			(*func_print) ("Ingrese Mes \n");
+			waitfor ((*func_get)(mes));
 		
 /*				if (tiempo.tm_mon == ESC)
 			{
@@ -205,27 +204,27 @@ cofunc unsigned long int	RTC_WRITE_Time(void)
 				if ( tiempo.tm_year > tiempo_actual.tm_year )
 				{
 					error_var = 2 ;
-					printf ("\n\t Mes Guardado ano pasado\n ");
+					(*func_print) ("\n\t Mes Guardado ano pasado\n ");
 				}
 				else if (tiempo.tm_mon >= tiempo_actual.tm_mon)
 				{
 					error_var = 2;
 					tiempo.tm_mon = atoi (mes);
-					printf ("\n\t Mes Guardado este ano\n ");
+					(*func_print) ("\n\t Mes Guardado este ano\n ");
 				}
 
 			}
 			if(error_var == 1)
 			{
-				printf ("\n\t El Mes ingresado no es valido, ingrese Mes nuevamente \n ");
+				(*func_print) ("\n\t El Mes ingresado no es valido, ingrese Mes nuevamente \n ");
 				break;
 			}
 
 			case (2):
 			time = read_rtc();
 			mktm ( &tiempo_actual, time);
-			printf ("Ingrese Dia \n");
-			waitfor (getswf(dia));
+			(*func_print) ("Ingrese Dia \n");
+			waitfor ((*func_get)(dia));
 			
 			
 /*				if (tiempo.tm_mday == ESC)
@@ -246,12 +245,12 @@ cofunc unsigned long int	RTC_WRITE_Time(void)
 					if (tiempo.tm_mon > tiempo_actual.tm_mon || tiempo.tm_year > tiempo_actual.tm_year)
 					{
 						error_var = 3;
-						printf ("\n\t Dia Guardado\n ");
+						(*func_print) ("\n\t Dia Guardado\n ");
 					}
 					else if (tiempo.tm_mday >= tiempo_actual.tm_mday)
 							{
 								error_var = 3;
-								printf ("\n\t Dia Guardado\n ");
+								(*func_print) ("\n\t Dia Guardado\n ");
 							}
 							
 
@@ -260,7 +259,7 @@ cofunc unsigned long int	RTC_WRITE_Time(void)
 			}
 			 if(error_var == 2)
 			{
-				printf ("\n\t El Dia ingresado no es valido, ingrese Dia nuevamente \n ");
+				(*func_print) ("\n\t El Dia ingresado no es valido, ingrese Dia nuevamente \n ");
 				break;
 			}
 
@@ -268,8 +267,8 @@ cofunc unsigned long int	RTC_WRITE_Time(void)
 			case (3):
 			time = read_rtc();
 			mktm ( &tiempo_actual, time);
-			printf ("Ingrese hora \n");
-			waitfor (getswf(hora));
+			(*func_print) ("Ingrese hora \n");
+			waitfor ((*func_get)(hora));
 
 			
 /*				if (tiempo.tm_hour	== ESC)
@@ -283,27 +282,27 @@ cofunc unsigned long int	RTC_WRITE_Time(void)
 				if ( tiempo.tm_year > tiempo_actual.tm_year || tiempo.tm_mon > tiempo_actual.tm_mon || tiempo.tm_mday > tiempo_actual.tm_mday)
 				{
 					error_var = 4;
-					printf ("\n\t Hora Guardada 1\n ");
+					(*func_print) ("\n\t Hora Guardada 1\n ");
 				}
 				else if (tiempo.tm_hour >= tiempo_actual.tm_hour)
 				{
 					error_var = 4;
-					printf ("\n\t Hora Guardada 2 \n ");
+					(*func_print) ("\n\t Hora Guardada 2 \n ");
 				}
 	
 
 			}
 			if(error_var == 3)
 			{
-				printf ("\n\t La Hora ingresada no es valida, ingrese Hora nuevamente \n ");
+				(*func_print) ("\n\t La Hora ingresada no es valida, ingrese Hora nuevamente \n ");
 				break;
 			}
 
 			case (4):
 			time = read_rtc();
 			mktm ( &tiempo_actual, time);
-			printf ("Ingrese Minutos \n");
-			waitfor (getswf(minutos));
+			(*func_print) ("Ingrese Minutos \n");
+			waitfor ((*func_get)(minutos));
 			
 			
 /*				if (tiempo.tm_min	== ESC)
@@ -317,18 +316,18 @@ cofunc unsigned long int	RTC_WRITE_Time(void)
 				if ( tiempo.tm_year > tiempo_actual.tm_year || tiempo.tm_mon > tiempo_actual.tm_mon || tiempo.tm_mday > tiempo_actual.tm_mday || tiempo.tm_hour > tiempo_actual.tm_hour)
 				{
 					error_var = 5;
-					printf ("\n\t Minutos Guardados\n ");
+					(*func_print) ("\n\t Minutos Guardados\n ");
 				}
 				else if (tiempo.tm_min >= tiempo_actual.tm_min)
 				{
 					error_var = 5 ;
-					printf ("\n\t Minutos Guardados\n ");
+					(*func_print) ("\n\t Minutos Guardados\n ");
 				}
 				
 			}
 			if(error_var == 4)
 			{
-				printf ("\n\t El minuto ingresado no es valido, ingrese minuto nuevamente \n ");
+				(*func_print) ("\n\t El minuto ingresado no es valido, ingrese minuto nuevamente \n ");
 				break;
 			}
 

@@ -4,7 +4,18 @@
 
 
 //void programo_rtc(void);
+void print_consola( char *p_string );
+void print_ethernet(  char *p_string );
 
+void print_consola( char *p_string )
+{
+	printf(p_string);
+}
+
+void print_ethernet( char *p_string )
+{
+	sock_puts (&echosock, p_string);
+}
 
 
 main()
@@ -21,8 +32,7 @@ main()
     int frecuencia;
 	char buffer[512];
 	int status;
-	char esperando;
-	esperando = 1 ;
+
 
 	for ( i = 0 ; i<CANTIDAD_EVENTOS; i++)
 	{
@@ -38,15 +48,9 @@ main()
 		costate // Usuario
 		{
 //------------------- MENU DE USUARIO ---------------------------------------
-			printf("\n Elija la tarea a realizar\n\t 1 = Fijar Hora del reloj\n\t 2 = Consultar Hora \n\t 3 = Agregar Evento al calendario \n\t 4 = Quitar Evento del calendario \n\t 5 = Consultar lista de eventos activos del calendario\n\t 6 = Consultar entradas analogicas\n\t");
-			waitfor ( getswf(tarea_s));
-			tarea = atoi (tarea_s);
-			
-			while (esperando)
-				{
-					yield;
-				}
-			wfd EVENTO_Menu_Usuario( evento, tarea);
+
+
+			wfd EVENTO_Menu_Usuario[0]( evento, getswf, print_consola );
 		}
 
 //----------------------------------LED ROJO---------------------------------------------
@@ -96,24 +100,27 @@ main()
 					yield;
 				}
 			printf("Usuario Conectado\n");
+
 			sock_mode(&echosock,TCP_MODE_ASCII);
+
+
+
 			while(tcp_tick(&echosock))
 			{
-				//sock_wait_input(&echosock,0,NULL,&status)
+				wfd EVENTO_Menu_Usuario[1]( evento, getswf, print_ethernet );
+			/*	//sock_wait_input(&echosock,0,NULL,&status)
 				if (sock_bytesready(&echosock)>0)
 					{
-						//printf("entre");
 					if(sock_gets(&echosock,buffer,512))
 						{
 							sock_puts(&echosock,buffer);
 							printf("%s",buffer);
 						}
-						//printf("if sock_bytsread");
 					}
 					yield;
-					//printf("if
+					*/
 			}
-			printf("fuera while");
+
 
 			sock_err:
 			switch(status)

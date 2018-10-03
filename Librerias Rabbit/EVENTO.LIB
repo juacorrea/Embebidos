@@ -25,28 +25,38 @@ struct Event
 
 
 /*** BeginHeader EVENTO_Menu_Usuario  */
-cofunc void EVENTO_Menu_Usuario(struct Event *puntero_evento , char tarea);
+cofunc void EVENTO_Menu_Usuario [2](struct Event *puntero_evento , int (*func_get)(), void (*func_print)());
 /*** EndHeader */
-cofunc void EVENTO_Menu_Usuario(struct Event *puntero_evento, char tarea)
+cofunc void EVENTO_Menu_Usuario [2] (struct Event *puntero_evento , int (*func_get)(), void (*func_print)())
 {
 
 	int contador_eventos;
 	struct tm tiempo_actual;
 	unsigned long int time;
 	unsigned long int time_evento;
-
 	int i, i_1;
 	int frec;
-	char x_s [4];
+	char x_s[4];
 	char x;
 	char w_s[4];
-	char borrar [15];
+	char borrar[15];
 	int evento_borrar;
 	char error;
 	int hay_lugar;
-    char led;
+   char led;
+	char tarea;
+	char tarea_s[2];
 
 	error = 0;
+
+
+	(*func_print)("\n Elija la tarea a realizar\n\t1 = Fijar Hora del reloj\n\t");
+	(*func_print)("2 = Consultar Hora \n\t3 = Agregar Evento al calendario \n\t");
+	(*func_print)("4 = Quitar Evento del calendario \n\t5 = Consultar lista de eventos activos del calendario\n\t");
+	(*func_print)("6 = Consultar entradas analogicas\n\t");
+
+	waitfor ( (*func_get)(tarea_s));
+	tarea = atoi (tarea_s);
 
 
 
@@ -58,12 +68,12 @@ cofunc void EVENTO_Menu_Usuario(struct Event *puntero_evento, char tarea)
 esto me devuelve un valor y ese valor se lo asigno al RT, la funcion devuelve 0, ya que
 */
 				case(1):
-					wfd time = RTC_WRITE_Time();
+					wfd time = RTC_WRITE_Time(func_get,  func_print);
 					write_rtc (time);
-					printf("\n HORA CONFIGURADA\n");
+					(*func_print)("\n HORA CONFIGURADA\n");
 					time = read_rtc();
 					mktm ( &tiempo_actual, time);
-					printf ("\n Fecha:%d/%d/%d \n Hora %d:%d:%d \n" ,tiempo_actual.tm_mday, tiempo_actual.tm_mon, tiempo_actual.tm_year + 1900, tiempo_actual.tm_hour, tiempo_actual.tm_min, tiempo_actual.tm_sec);
+					(*func_print) ("\n Fecha:%d/%d/%d \n Hora %d:%d:%d \n" ,tiempo_actual.tm_mday, tiempo_actual.tm_mon, tiempo_actual.tm_year + 1900, tiempo_actual.tm_hour, tiempo_actual.tm_min, tiempo_actual.tm_sec);
 
 				return  ;
 //----------------------------------------------------------------------------
@@ -72,7 +82,9 @@ esto me devuelve un valor y ese valor se lo asigno al RT, la funcion devuelve 0,
 				case(2):
 					time = read_rtc();
 					mktm ( &tiempo_actual, time);
-					printf ("\n Fecha:%d/%d/%d \n Hora %d:%d:%d \n" ,tiempo_actual.tm_mday, tiempo_actual.tm_mon, tiempo_actual.tm_year + 1900, tiempo_actual.tm_hour, tiempo_actual.tm_min, tiempo_actual.tm_sec);
+					printf 	("\n Fecha:%d/%d/%d \n Hora %d:%d:%d \n" ,tiempo_actual.tm_mday, tiempo_actual.tm_mon, tiempo_actual.tm_year + 1900, tiempo_actual.tm_hour, tiempo_actual.tm_min, tiempo_actual.tm_sec);
+
+					(*func_print) ("\n Fecha:%d/%d/%d \n Hora %d:%d:%d \n" ,tiempo_actual.tm_mday, tiempo_actual.tm_mon, tiempo_actual.tm_year + 1900, tiempo_actual.tm_hour, tiempo_actual.tm_min, tiempo_actual.tm_sec);
 				return ;
 //--------------------------------------------------------------------------------
 //-------------------------AGREGAR EVENTO-----------------------------------------
@@ -87,64 +99,64 @@ nuevamente, se utiliza la varibale hay_lugar para determinar si se puede agregar
 						{
 							if ( puntero_evento->numero == VACIO) //Cuando el lugar esta libre anoto el evento
 							{
+								puntero_evento->numero  = i; //Lo pongo en un valor distinto asi no me lo modifica otro usuario
 								i_1 = i;
-								wfd time = RTC_WRITE_Time();
+								wfd time =  RTC_WRITE_Time( func_get,  func_print);;
 								i = i_1;
 								puntero_evento->time = time;
 
 								if (time == 0)
 								{
-									printf ("\n EVENTO NO CONFIGURADO \n");
+									(*func_print) ("\n EVENTO NO CONFIGURADO \n");
 									puntero_evento->numero = VACIO;
 								 return ;
 								}
 
 								puntero_evento->numero = i;
 								puntero_evento->command = PRENDER;
-								printf ("Elija un LED para el evento (Entre 0 Y 7)\n");
+								(*func_print) ("Elija un LED para el evento (Entre 0 Y 7)\n");
 
 								error = 0;
 								while (error < 1)
 								{
 									i_1 = i;
-									waitfor (getswf(x_s));
+									waitfor ((*func_get)(x_s));
 									x = atoi(x_s);
 									i = i_1;
 									if (x<8 && x>=0)
 										{
 											puntero_evento->param = x;
-											printf("\n\t Led OK\n");
+											(*func_print)("\n\t Led OK\n");
 											error = 1;
 										}
 									else
 										{
-											printf("\n\t El LED no es valido, ingrese un numero del 0 al 7 \n");
+											(*func_print)("\n\t El LED no es valido, ingrese un numero del 0 al 7 \n");
 											error = 0;
 										}
 								}
 
-								printf ("\n Elija frecuencia para prender y apagar el LED (Entre (1-9)*0.1s)\n");
+								(*func_print) ("\n Elija frecuencia para prender y apagar el LED (Entre (1-9)*0.1s)\n");
 								error = 0;
 								while (error <1 )
 								{
 									i_1 = i;
-									waitfor (getswf (w_s));
+									waitfor ((*func_get) (w_s));
 									frec = atoi (w_s);
 									i = i_1;
 									//t = 0;
 									if (frec <10 && frec >=0)
 								   {
-										puntero_evento->numero  = i;
 										puntero_evento->frec = frec;      // frecuencia con la que desea prender y apagar el led
-										printf("\n\t Frecuencia OK\n");
-										printf("\n EVENTO %d GUARDADO \t%d\n",puntero_evento->numero,i);
+											(*func_print)("\n\t Frecuencia OK\n");
+											(*func_print)("\n EVENTO %d GUARDADO \t%d\n",puntero_evento->numero,i);
 										i = CANTIDAD_EVENTOS;
 										hay_lugar = 1;
 										error = 1;
 								   }
 								   else
 								   {
-									   printf("\n\t LA FRECUENCIA NO ES VÁLIDA, elegir entre (1-9)*0.1s \n");
+									   	(*func_print)("\n\t LA FRECUENCIA NO ES VÁLIDA, elegir entre (1-9)*0.1s \n");
 									   error = 0;
 								   }
 								}
@@ -155,7 +167,7 @@ nuevamente, se utiliza la varibale hay_lugar para determinar si se puede agregar
 
 						if (hay_lugar == 0)
 						{
-							printf("\n NO HAY ESPACIO EN MEMORIA SUFICIENTE  \t\n");
+								(*func_print)("\n NO HAY ESPACIO EN MEMORIA SUFICIENTE  \t\n");
 						}
 				return  ;
 //------------------------------------------------------------------------------------------------------------------
@@ -166,11 +178,11 @@ si existe el evento, entonces a evento.numero le asigno el valor de VACIO,
 si no existe puede ser porque no hay un evento configurado o porque
 exede la cantidad de eventos maxima (CANTIDAD_EVENTOS).*/
 				case (4):
-					printf("Elija el numero del evento a borrar \n");
+						(*func_print)("Elija el numero del evento a borrar \n");
 					error = 0;
 					while (error <1 )
 					{
-						waitfor (getswf(borrar));
+						waitfor ((*func_get)(borrar));
 						evento_borrar = atoi(borrar);
 						if (evento_borrar < CANTIDAD_EVENTOS && CANTIDAD_EVENTOS>= 0)
 						{
@@ -178,21 +190,21 @@ exede la cantidad de eventos maxima (CANTIDAD_EVENTOS).*/
 
 							if( puntero_evento->numero != VACIO)
 							{
-								printf("Evento borrado correctamente\n");
+									(*func_print)("Evento borrado correctamente\n");
 								puntero_evento->numero =  VACIO;
 								error = 1;
 
 							}
 							else
 							{
-								printf("No existe evento\n Lista de eventos:");
+									(*func_print)("No existe evento\n Lista de eventos:");
 								for ( i = 0 ; i<CANTIDAD_EVENTOS; i++)
 									{
 										if (puntero_evento->numero != VACIO)
 										{
 											time_evento = puntero_evento->time;
 											mktm ( &tiempo_actual, time_evento);
-											printf("\nEvento %d:\n\tFecha:%d/%d/%d \n\t Hora %d:%d:%d\n\tLed: %d\t Frec.:%d ms\n" ,i,tiempo_actual.tm_mday, tiempo_actual.tm_mon, tiempo_actual.tm_year+1900, tiempo_actual.tm_hour, tiempo_actual.tm_min, tiempo_actual.tm_sec,puntero_evento->param,puntero_evento->frec);
+												(*func_print)("\nEvento %d:\n\tFecha:%d/%d/%d \n\t Hora %d:%d:%d\n\tLed: %d\t Frec.:%d ms\n" ,i,tiempo_actual.tm_mday, tiempo_actual.tm_mon, tiempo_actual.tm_year+1900, tiempo_actual.tm_hour, tiempo_actual.tm_min, tiempo_actual.tm_sec,puntero_evento->param,puntero_evento->frec);
 										}
 										puntero_evento ++;
 									}
@@ -201,7 +213,7 @@ exede la cantidad de eventos maxima (CANTIDAD_EVENTOS).*/
 						}
 						else
 						{
-							printf("\n\t El numero de evento no es valido, ingrese uno del 0 al 7 \n");
+								(*func_print)("\n\t El numero de evento no es valido, ingrese uno del 0 al 7 \n");
 							return ;
 						}
 					}
@@ -220,7 +232,7 @@ exede la cantidad de eventos maxima (CANTIDAD_EVENTOS).*/
 								contador_eventos++;
 								if(contador_eventos == CANTIDAD_EVENTOS)
 								{
-									printf("No hay eventos programados");
+										(*func_print)("No hay eventos programados");
 								}
 
 							}
@@ -228,7 +240,7 @@ exede la cantidad de eventos maxima (CANTIDAD_EVENTOS).*/
 							{
 								time_evento = puntero_evento->time;
 								mktm ( &tiempo_actual, time_evento);
-								printf("\nEvento %d:\n\tFecha:%d/%d/%d \n\t Hora %d:%d:%d\n\tLed: %d\t Frec.:%d Hz\n" ,i,tiempo_actual.tm_mday, tiempo_actual.tm_mon, tiempo_actual.tm_year+1900, tiempo_actual.tm_hour, tiempo_actual.tm_min, tiempo_actual.tm_sec,puntero_evento->param,puntero_evento->frec);
+									(*func_print)("\nEvento %d:\n\tFecha:%d/%d/%d \n\t Hora %d:%d:%d\n\tLed: %d\t Frec.:%d Hz\n" ,i,tiempo_actual.tm_mday, tiempo_actual.tm_mon, tiempo_actual.tm_year+1900, tiempo_actual.tm_hour, tiempo_actual.tm_min, tiempo_actual.tm_sec,puntero_evento->param,puntero_evento->frec);
 							}
 							puntero_evento ++;
 						}
@@ -237,8 +249,8 @@ exede la cantidad de eventos maxima (CANTIDAD_EVENTOS).*/
  /*Imprime en pantalla ambas entradas analogicas*/
 				case (6):
 
-					printf("Input_0 = %d\n", IO_getAnalogInput( 0 ));
-					printf("Input_1 = %d\n", IO_getAnalogInput( 1 ));
+						(*func_print)("Input_0 = %d\n", IO_getAnalogInput( 0 ));
+						(*func_print)("Input_1 = %d\n", IO_getAnalogInput( 1 ));
 
 				return;
 
@@ -247,10 +259,17 @@ exede la cantidad de eventos maxima (CANTIDAD_EVENTOS).*/
 //------------------------------------------------------------------------------
 
 				default:
-					printf("ERROR número equivocado\n");
+						(*func_print)("ERROR número equivocado\n");
 					return;
 			}
 
 
 
 }
+
+
+
+
+
+
+

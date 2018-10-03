@@ -1,3 +1,10 @@
+/*** BeginHeader */
+#use IO.lib
+
+#define CONSOLA				0
+#define ETH				1
+/*** EndHeader */
+
 
 /*** BeginHeader UT_delay */
 void UT_delay( long p_ms );
