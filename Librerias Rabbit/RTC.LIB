@@ -179,12 +179,14 @@ cofunc unsigned long int	RTC_WRITE_Time(int (*func_get)(), void (*func_print)())
 				{
 					error_var = 1;
 					(*func_print) ("\n\t Ano Guardado\n ");
+					UT_delay(10);
 				}
 
 			}
 			if(error_var == 0)
 			{
 				(*func_print) ("\n\t El ano ingresado no es valido, ingrese ano nuevamente \n ");
+				UT_delay(10);
 				break;
 			}
 
@@ -204,19 +206,22 @@ cofunc unsigned long int	RTC_WRITE_Time(int (*func_get)(), void (*func_print)())
 				if ( tiempo.tm_year > tiempo_actual.tm_year )
 				{
 					error_var = 2 ;
-					(*func_print) ("\n\t Mes Guardado ano pasado\n ");
+					(*func_print) ("\n\t Mes Guardado\n ");
+					UT_delay(10);
 				}
 				else if (tiempo.tm_mon >= tiempo_actual.tm_mon)
 				{
 					error_var = 2;
 					tiempo.tm_mon = atoi (mes);
-					(*func_print) ("\n\t Mes Guardado este ano\n ");
+					(*func_print) ("\n\t Mes Guardado\n ");
+					UT_delay(10);
 				}
 
 			}
 			if(error_var == 1)
 			{
 				(*func_print) ("\n\t El Mes ingresado no es valido, ingrese Mes nuevamente \n ");
+				UT_delay(10);
 				break;
 			}
 
@@ -246,11 +251,13 @@ cofunc unsigned long int	RTC_WRITE_Time(int (*func_get)(), void (*func_print)())
 					{
 						error_var = 3;
 						(*func_print) ("\n\t Dia Guardado\n ");
+						UT_delay(10);
 					}
 					else if (tiempo.tm_mday >= tiempo_actual.tm_mday)
 							{
 								error_var = 3;
 								(*func_print) ("\n\t Dia Guardado\n ");
+								UT_delay(10);
 							}
 							
 
@@ -260,6 +267,7 @@ cofunc unsigned long int	RTC_WRITE_Time(int (*func_get)(), void (*func_print)())
 			 if(error_var == 2)
 			{
 				(*func_print) ("\n\t El Dia ingresado no es valido, ingrese Dia nuevamente \n ");
+				UT_delay(10);
 				break;
 			}
 
@@ -282,12 +290,14 @@ cofunc unsigned long int	RTC_WRITE_Time(int (*func_get)(), void (*func_print)())
 				if ( tiempo.tm_year > tiempo_actual.tm_year || tiempo.tm_mon > tiempo_actual.tm_mon || tiempo.tm_mday > tiempo_actual.tm_mday)
 				{
 					error_var = 4;
-					(*func_print) ("\n\t Hora Guardada 1\n ");
+					(*func_print) ("\n\t Hora Guardada\n ");
+					UT_delay(10);
 				}
 				else if (tiempo.tm_hour >= tiempo_actual.tm_hour)
 				{
 					error_var = 4;
-					(*func_print) ("\n\t Hora Guardada 2 \n ");
+					(*func_print) ("\n\t Hora Guardada\n ");
+					UT_delay(10);
 				}
 	
 
@@ -295,6 +305,7 @@ cofunc unsigned long int	RTC_WRITE_Time(int (*func_get)(), void (*func_print)())
 			if(error_var == 3)
 			{
 				(*func_print) ("\n\t La Hora ingresada no es valida, ingrese Hora nuevamente \n ");
+				UT_delay(10);
 				break;
 			}
 
@@ -317,17 +328,20 @@ cofunc unsigned long int	RTC_WRITE_Time(int (*func_get)(), void (*func_print)())
 				{
 					error_var = 5;
 					(*func_print) ("\n\t Minutos Guardados\n ");
+					UT_delay(10);
 				}
 				else if (tiempo.tm_min >= tiempo_actual.tm_min)
 				{
 					error_var = 5 ;
 					(*func_print) ("\n\t Minutos Guardados\n ");
+					UT_delay(10);
 				}
 				
 			}
 			if(error_var == 4)
 			{
 				(*func_print) ("\n\t El minuto ingresado no es valido, ingrese minuto nuevamente \n ");
+				UT_delay(10);
 				break;
 			}
 

@@ -31,6 +31,7 @@ main()
     char led;
     int frecuencia;
 	char buffer[512];
+	char buffer_print[256];
 	int status;
 
 

@@ -43,16 +43,20 @@ cofunc void EVENTO_Menu_Usuario [2] (struct Event *puntero_evento , int (*func_g
 	int evento_borrar;
 	char error;
 	int hay_lugar;
-   char led;
+    char led;
 	char tarea;
 	char tarea_s[2];
+	char buffer_print[256];
 
 	error = 0;
 
-
+//Revisar que marche en Ethernet--------------------------------------------------------
 	(*func_print)("\n Elija la tarea a realizar\n\t1 = Fijar Hora del reloj\n\t");
+	UT_delay(10);
 	(*func_print)("2 = Consultar Hora \n\t3 = Agregar Evento al calendario \n\t");
+	UT_delay(10);
 	(*func_print)("4 = Quitar Evento del calendario \n\t5 = Consultar lista de eventos activos del calendario\n\t");
+	UT_delay(10);
 	(*func_print)("6 = Consultar entradas analogicas\n\t");
 
 	waitfor ( (*func_get)(tarea_s));
@@ -73,8 +77,8 @@ esto me devuelve un valor y ese valor se lo asigno al RT, la funcion devuelve 0,
 					(*func_print)("\n HORA CONFIGURADA\n");
 					time = read_rtc();
 					mktm ( &tiempo_actual, time);
-					(*func_print) ("\n Fecha:%d/%d/%d \n Hora %d:%d:%d \n" ,tiempo_actual.tm_mday, tiempo_actual.tm_mon, tiempo_actual.tm_year + 1900, tiempo_actual.tm_hour, tiempo_actual.tm_min, tiempo_actual.tm_sec);
-
+					sprintf(buffer_print,"\n Fecha:%d/%d/%d \n Hora %d:%d:%d \n" ,tiempo_actual.tm_mday, tiempo_actual.tm_mon, tiempo_actual.tm_year + 1900, tiempo_actual.tm_hour, tiempo_actual.tm_min, tiempo_actual.tm_sec);
+					(*func_print)(buffer_print);
 				return  ;
 //----------------------------------------------------------------------------
 //------------------------LEER HORA--------------------------------------------
@@ -82,9 +86,8 @@ esto me devuelve un valor y ese valor se lo asigno al RT, la funcion devuelve 0,
 				case(2):
 					time = read_rtc();
 					mktm ( &tiempo_actual, time);
-					printf 	("\n Fecha:%d/%d/%d \n Hora %d:%d:%d \n" ,tiempo_actual.tm_mday, tiempo_actual.tm_mon, tiempo_actual.tm_year + 1900, tiempo_actual.tm_hour, tiempo_actual.tm_min, tiempo_actual.tm_sec);
-
-					(*func_print) ("\n Fecha:%d/%d/%d \n Hora %d:%d:%d \n" ,tiempo_actual.tm_mday, tiempo_actual.tm_mon, tiempo_actual.tm_year + 1900, tiempo_actual.tm_hour, tiempo_actual.tm_min, tiempo_actual.tm_sec);
+					sprintf(buffer_print,"\n Fecha:%d/%d/%d \n Hora %d:%d:%d \n" ,tiempo_actual.tm_mday, tiempo_actual.tm_mon, tiempo_actual.tm_year + 1900, tiempo_actual.tm_hour, tiempo_actual.tm_min, tiempo_actual.tm_sec);
+					(*func_print)(buffer_print);
 				return ;
 //--------------------------------------------------------------------------------
 //-------------------------AGREGAR EVENTO-----------------------------------------
@@ -127,11 +130,13 @@ nuevamente, se utiliza la varibale hay_lugar para determinar si se puede agregar
 										{
 											puntero_evento->param = x;
 											(*func_print)("\n\t Led OK\n");
+											UT_delay(10);
 											error = 1;
 										}
 									else
 										{
 											(*func_print)("\n\t El LED no es valido, ingrese un numero del 0 al 7 \n");
+											UT_delay(10);
 											error = 0;
 										}
 								}
@@ -149,7 +154,9 @@ nuevamente, se utiliza la varibale hay_lugar para determinar si se puede agregar
 								   {
 										puntero_evento->frec = frec;      // frecuencia con la que desea prender y apagar el led
 											(*func_print)("\n\t Frecuencia OK\n");
-											(*func_print)("\n EVENTO %d GUARDADO \t%d\n",puntero_evento->numero,i);
+											UT_delay(10);
+											sprintf(buffer_print,"\n EVENTO %d GUARDADO \t%d\n",puntero_evento->numero,i);
+											(*func_print)(buffer_print);
 										i = CANTIDAD_EVENTOS;
 										hay_lugar = 1;
 										error = 1;
@@ -157,6 +164,7 @@ nuevamente, se utiliza la varibale hay_lugar para determinar si se puede agregar
 								   else
 								   {
 									   	(*func_print)("\n\t LA FRECUENCIA NO ES VÁLIDA, elegir entre (1-9)*0.1s \n");
+										UT_delay(10);
 									   error = 0;
 								   }
 								}
@@ -168,6 +176,7 @@ nuevamente, se utiliza la varibale hay_lugar para determinar si se puede agregar
 						if (hay_lugar == 0)
 						{
 								(*func_print)("\n NO HAY ESPACIO EN MEMORIA SUFICIENTE  \t\n");
+								UT_delay(10);
 						}
 				return  ;
 //------------------------------------------------------------------------------------------------------------------
@@ -184,27 +193,30 @@ exede la cantidad de eventos maxima (CANTIDAD_EVENTOS).*/
 					{
 						waitfor ((*func_get)(borrar));
 						evento_borrar = atoi(borrar);
-						if (evento_borrar < CANTIDAD_EVENTOS && CANTIDAD_EVENTOS>= 0)
+						if (evento_borrar < CANTIDAD_EVENTOS && evento_borrar>= 0)
 						{
 							puntero_evento = puntero_evento + evento_borrar; //AUMENTO LA DIRRECCION DEL PUNTERO A LA QUE QUIERE EL USUARIO
 
 							if( puntero_evento->numero != VACIO)
 							{
-									(*func_print)("Evento borrado correctamente\n");
+								(*func_print)("Evento borrado correctamente\n");
+								UT_delay(10);
 								puntero_evento->numero =  VACIO;
 								error = 1;
 
 							}
 							else
 							{
-									(*func_print)("No existe evento\n Lista de eventos:");
+								(*func_print)("No existe evento\n Lista de eventos:");
 								for ( i = 0 ; i<CANTIDAD_EVENTOS; i++)
 									{
 										if (puntero_evento->numero != VACIO)
 										{
 											time_evento = puntero_evento->time;
 											mktm ( &tiempo_actual, time_evento);
-												(*func_print)("\nEvento %d:\n\tFecha:%d/%d/%d \n\t Hora %d:%d:%d\n\tLed: %d\t Frec.:%d ms\n" ,i,tiempo_actual.tm_mday, tiempo_actual.tm_mon, tiempo_actual.tm_year+1900, tiempo_actual.tm_hour, tiempo_actual.tm_min, tiempo_actual.tm_sec,puntero_evento->param,puntero_evento->frec);
+											sprintf(buffer_print,"\nEvento %d:\n\tFecha:%d/%d/%d \n\t Hora %d:%d:%d\n\tLed: %d\t Frec.:%d ms\n" ,i,tiempo_actual.tm_mday, tiempo_actual.tm_mon, tiempo_actual.tm_year+1900, tiempo_actual.tm_hour, tiempo_actual.tm_min, tiempo_actual.tm_sec,puntero_evento->param,puntero_evento->frec);
+											(*func_print)(buffer_print);
+											UT_delay(10);
 										}
 										puntero_evento ++;
 									}
@@ -214,6 +226,7 @@ exede la cantidad de eventos maxima (CANTIDAD_EVENTOS).*/
 						else
 						{
 								(*func_print)("\n\t El numero de evento no es valido, ingrese uno del 0 al 7 \n");
+								UT_delay(10);
 							return ;
 						}
 					}
@@ -222,7 +235,7 @@ exede la cantidad de eventos maxima (CANTIDAD_EVENTOS).*/
 //-------------------------- MOSTRAR EVENTOS-----------------------------------
 /*Imprime en pantalla unicamente los eventos que tengan el valor de evento.numero != VACIO*/
 
-            case(5):
+				case(5):
 
                contador_eventos = 0;
                for ( i = 0 ; i<CANTIDAD_EVENTOS; i++)
@@ -233,6 +246,7 @@ exede la cantidad de eventos maxima (CANTIDAD_EVENTOS).*/
 								if(contador_eventos == CANTIDAD_EVENTOS)
 								{
 										(*func_print)("No hay eventos programados");
+										UT_delay(10);
 								}
 
 							}
@@ -240,7 +254,9 @@ exede la cantidad de eventos maxima (CANTIDAD_EVENTOS).*/
 							{
 								time_evento = puntero_evento->time;
 								mktm ( &tiempo_actual, time_evento);
-									(*func_print)("\nEvento %d:\n\tFecha:%d/%d/%d \n\t Hora %d:%d:%d\n\tLed: %d\t Frec.:%d Hz\n" ,i,tiempo_actual.tm_mday, tiempo_actual.tm_mon, tiempo_actual.tm_year+1900, tiempo_actual.tm_hour, tiempo_actual.tm_min, tiempo_actual.tm_sec,puntero_evento->param,puntero_evento->frec);
+								sprintf(buffer_print,"\nEvento %d:\n\tFecha:%d/%d/%d \n\t Hora %d:%d:%d\n\tLed: %d\t Frec.:%d Hz\n" ,i,tiempo_actual.tm_mday, tiempo_actual.tm_mon, tiempo_actual.tm_year+1900, tiempo_actual.tm_hour, tiempo_actual.tm_min, tiempo_actual.tm_sec,puntero_evento->param,puntero_evento->frec);
+								(*func_print)(buffer_print);
+								UT_delay(10);
 							}
 							puntero_evento ++;
 						}
@@ -249,8 +265,9 @@ exede la cantidad de eventos maxima (CANTIDAD_EVENTOS).*/
  /*Imprime en pantalla ambas entradas analogicas*/
 				case (6):
 
-						(*func_print)("Input_0 = %d\n", IO_getAnalogInput( 0 ));
-						(*func_print)("Input_1 = %d\n", IO_getAnalogInput( 1 ));
+						sprintf(buffer_print,"Input 0 = %d\nInput 1 = %d\n", IO_getAnalogInput( 0 ),IO_getAnalogInput( 1 ));
+						(*func_print)(buffer_print);
+						UT_delay(10);
 
 				return;
 
@@ -260,6 +277,7 @@ exede la cantidad de eventos maxima (CANTIDAD_EVENTOS).*/
 
 				default:
 						(*func_print)("ERROR número equivocado\n");
+						UT_delay(10);
 					return;
 			}
 
