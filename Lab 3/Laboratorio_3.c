@@ -3,10 +3,12 @@
 #use "dcrtcp.lib"
 
 
+int status;
+
 //void programo_rtc(void);
 void print_consola( char *p_string );
 void print_ethernet(  char *p_string );
-
+cofunc int get_ethernet (char *p_string );
 void print_consola( char *p_string )
 {
 	printf(p_string);
@@ -16,6 +18,31 @@ void print_ethernet( char *p_string )
 {
 	sock_puts (&echosock, p_string);
 }
+/*La funcion get_ethernet devuelve uno cuando le llego el valor, cero cuando no
+ya que esta funcion es siempre llamada por un wfd*/
+int get_ethernet (char *p_string )
+{
+
+
+			sock_wait_input(&echosock,0,NULL,&status)
+			if (sock_bytesready(&echosock)>0)
+			{
+				if(sock_gets(&echosock,p_string,512))
+				{
+					sock_puts(&echosock,p_string);
+					printf("%s",p_string);
+					return 1;
+				}
+			}else
+			{
+				return 0;
+			}
+
+}
+
+
+
+
 
 
 main()
@@ -32,7 +59,6 @@ main()
     int frecuencia;
 	char buffer[512];
 	char buffer_print[256];
-	int status;
 
 
 	for ( i = 0 ; i<CANTIDAD_EVENTOS; i++)
@@ -105,22 +131,11 @@ main()
 			sock_mode(&echosock,TCP_MODE_ASCII);
 
 
+	while(tcp_tick(&echosock))
+		{
+			wfd EVENTO_Menu_Usuario[1]( evento, get_ethernet, print_ethernet );
 
-			while(tcp_tick(&echosock))
-			{
-				wfd EVENTO_Menu_Usuario[1]( evento, getswf, print_ethernet );
-			/*	//sock_wait_input(&echosock,0,NULL,&status)
-				if (sock_bytesready(&echosock)>0)
-					{
-					if(sock_gets(&echosock,buffer,512))
-						{
-							sock_puts(&echosock,buffer);
-							printf("%s",buffer);
-						}
-					}
-					yield;
-					*/
-			}
+		}
 
 
 			sock_err:
