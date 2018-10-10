@@ -62,7 +62,7 @@ cofunc int EVENTO_Menu_Usuario [2] (struct Event *puntero_evento , int (*func_ge
 	(*func_print)("6 = Consultar entradas analogicas\n\t");
 
 	waitfor (error_conexion = ((*func_get)(tarea_s)!=0));
-	if (error == -1)
+	if (error_conexion == -1)
 	{
 		return ERROR ;
 	}
@@ -119,7 +119,7 @@ nuevamente, se utiliza la varibale hay_lugar para determinar si se puede agregar
 						{
 							return ERROR ;
 						}
-						
+
 						i = i_1;
 						puntero_evento->time = time;
 
@@ -304,6 +304,8 @@ exede la cantidad de eventos maxima (CANTIDAD_EVENTOS).*/
 
 				default:
 				(*func_print)("ERROR numero equivocado\n");
+				sprintf(buffer_print,"%d",tarea);
+				(*func_print)(buffer_print);
 				UT_delay(10);
 				return 0;
 			}

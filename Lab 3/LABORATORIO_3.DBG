@@ -1,0 +1,4 @@
+Watch0=tarea_s:EVENTO_Menu_Usuario
+Watch1=error_conexion:EVENTO_Menu_Usuario
+cbWatch0=error_conexion
+cbWatch1=tarea_s
