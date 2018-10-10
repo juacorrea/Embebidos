@@ -2,7 +2,7 @@
 #use EVENTO.LIB
 #use "dcrtcp.lib"
 
-#define ERROR_CONEXION			-1 
+#define ERROR_CONEXION			-1
 
 
 int status;
@@ -41,12 +41,12 @@ int get_ethernet (char *p_string )
 				return 0;
 			}
 		}
-		else 
+		else
 		{
-			
+
 			return ERROR_CONEXION; // TIENE QUE VALER -1
-			
-		
+
+
 		}
 }
 
@@ -140,13 +140,15 @@ main()
 			printf("Usuario Conectado\n");
 
 			sock_mode(&echosock,TCP_MODE_ASCII);
-
+			while(tcp_tick(&echosock))
+			{
 			wfd  chequeo = EVENTO_Menu_Usuario[1](evento, get_ethernet, print_ethernet );
+			}
 			if (chequeo == ERROR)
 			{
 				printf("Conexion caida /n");
 			}
-		
+
 
 
 

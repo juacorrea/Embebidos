@@ -79,7 +79,7 @@ esto me devuelve un valor y ese valor se lo asigno al RT, la funcion devuelve 0,
 */
 				case(1):
 				wfd time = RTC_WRITE_Time(func_get,  func_print);
-				if (time == -1)
+				if (time == ERROR)
 				{
 					return ERROR ;
 				}
@@ -115,10 +115,11 @@ nuevamente, se utiliza la varibale hay_lugar para determinar si se puede agregar
 						puntero_evento->numero  = i; //Lo pongo en un valor distinto asi no me lo modifica otro usuario
 						i_1 = i;
 						wfd time =  RTC_WRITE_Time( func_get,  func_print);
-						if (time == -1)
+						if (time == ERROR)
 						{
 							return ERROR ;
 						}
+						
 						i = i_1;
 						puntero_evento->time = time;
 
@@ -138,7 +139,7 @@ nuevamente, se utiliza la varibale hay_lugar para determinar si se puede agregar
 						{
 							i_1 = i;
 							waitfor (error_conexion = ((*func_get)(x_s)!=0));
-							if (error == -1)
+							if (error_conexion == -1)
 							{
 								return ERROR ;
 							}
@@ -165,7 +166,7 @@ nuevamente, se utiliza la varibale hay_lugar para determinar si se puede agregar
 						{
 							i_1 = i;
 							waitfor (error_conexion = ((*func_get)(w_s)!=0));
-							if (error == -1)
+							if (error_conexion == -1)
 							{
 								return ERROR ;
 							}
@@ -214,7 +215,7 @@ exede la cantidad de eventos maxima (CANTIDAD_EVENTOS).*/
 				while (error <1 )
 				{
 					waitfor (error_conexion = ((*func_get)(borrar)!=0));
-					if (error == -1)
+					if (error_conexion == -1)
 					{
 						return ERROR ;
 					}
