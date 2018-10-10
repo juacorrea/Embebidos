@@ -2,6 +2,8 @@
 #use EVENTO.LIB
 #use "dcrtcp.lib"
 
+#define ERROR_CONEXION			-1 
+
 
 int status;
 
@@ -22,9 +24,9 @@ void print_ethernet( char *p_string )
 ya que esta funcion es siempre llamada por un wfd*/
 int get_ethernet (char *p_string )
 {
-
-
-			sock_wait_input(&echosock,0,NULL,&status)
+		if (tcp_tick(&echosock) == 1)
+		{
+			//sock_wait_input(&echosock,0,NULL,&status)
 			if (sock_bytesready(&echosock)>0)
 			{
 				if(sock_gets(&echosock,p_string,512))
@@ -33,11 +35,19 @@ int get_ethernet (char *p_string )
 					printf("%s",p_string);
 					return 1;
 				}
-			}else
+			}
+			else
 			{
 				return 0;
 			}
-
+		}
+		else 
+		{
+			
+			return ERROR_CONEXION; // TIENE QUE VALER -1
+			
+		
+		}
 }
 
 
@@ -59,6 +69,7 @@ main()
     int frecuencia;
 	char buffer[512];
 	char buffer_print[256];
+	int chequeo;
 
 
 	for ( i = 0 ; i<CANTIDAD_EVENTOS; i++)
@@ -77,7 +88,7 @@ main()
 //------------------- MENU DE USUARIO ---------------------------------------
 
 
-			wfd EVENTO_Menu_Usuario[0]( evento, getswf, print_consola );
+			wfd chequeo = EVENTO_Menu_Usuario[0]( evento, getswf, print_consola );
 		}
 
 //----------------------------------LED ROJO---------------------------------------------
@@ -130,24 +141,15 @@ main()
 
 			sock_mode(&echosock,TCP_MODE_ASCII);
 
-
-	while(tcp_tick(&echosock))
-		{
-			wfd EVENTO_Menu_Usuario[1]( evento, get_ethernet, print_ethernet );
-
-		}
-
-
-			sock_err:
-			switch(status)
+			wfd  chequeo = EVENTO_Menu_Usuario[1](evento, get_ethernet, print_ethernet );
+			if (chequeo == ERROR)
 			{
-				case 1: /* foreign host closed */
-					printf("User closed session\n");
-					break;
-				case -1: /* time-out */
-					printf("Connection timed out\n");
-					break;
+				printf("Conexion caida /n");
 			}
+		
+
+
+
 
 
 		}

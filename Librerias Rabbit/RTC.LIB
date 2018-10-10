@@ -150,6 +150,8 @@ cofunc unsigned long int	RTC_WRITE_Time(int (*func_get)(), void (*func_print)())
 	char chequeo_mes_para_func;
 	int vueltas;
 	char chequeo_ano_para_func;
+	char error;
+	error = 0;
 	vueltas = 0;
 	
 
@@ -163,7 +165,11 @@ cofunc unsigned long int	RTC_WRITE_Time(int (*func_get)(), void (*func_print)())
 			time = read_rtc();
 			mktm ( &tiempo_actual, time);
 			(*func_print) ("Ingrese Ano \n");
-			waitfor ((*func_get)(ano));
+			waitfor (error = ((*func_get)(ano)!=0));
+			if (error == -1)
+			{
+				return ERROR;
+			}
 			/*if (tiempo.tm_year == ESC)
 			{
 				tiempo_devolver = 0;
@@ -194,7 +200,11 @@ cofunc unsigned long int	RTC_WRITE_Time(int (*func_get)(), void (*func_print)())
 			time = read_rtc();
 			mktm ( &tiempo_actual, time);
 			(*func_print) ("Ingrese Mes \n");
-			waitfor ((*func_get)(mes));
+			waitfor ((error = ((*func_get)(mes)!=0));
+			if (error == -1)
+			{
+				return ERROR;
+			}
 		
 /*				if (tiempo.tm_mon == ESC)
 			{
@@ -229,7 +239,11 @@ cofunc unsigned long int	RTC_WRITE_Time(int (*func_get)(), void (*func_print)())
 			time = read_rtc();
 			mktm ( &tiempo_actual, time);
 			(*func_print) ("Ingrese Dia \n");
-			waitfor ((*func_get)(dia));
+			waitfor (error = ((*func_get)(dia)!=0));
+			if (error == -1)
+			{
+				return ERROR;
+			}
 			
 			
 /*				if (tiempo.tm_mday == ESC)
@@ -254,13 +268,11 @@ cofunc unsigned long int	RTC_WRITE_Time(int (*func_get)(), void (*func_print)())
 						UT_delay(10);
 					}
 					else if (tiempo.tm_mday >= tiempo_actual.tm_mday)
-							{
-								error_var = 3;
-								(*func_print) ("\n\t Dia Guardado\n ");
-								UT_delay(10);
-							}
-							
-
+					{
+						error_var = 3;
+						(*func_print) ("\n\t Dia Guardado\n ");
+						UT_delay(10);
+					}
 				}
 
 			}
@@ -276,8 +288,11 @@ cofunc unsigned long int	RTC_WRITE_Time(int (*func_get)(), void (*func_print)())
 			time = read_rtc();
 			mktm ( &tiempo_actual, time);
 			(*func_print) ("Ingrese hora \n");
-			waitfor ((*func_get)(hora));
-
+			waitfor (error = ((*func_get)(hora)!=0));
+			if (error == -1)
+			{
+				return ERROR ;
+			}
 			
 /*				if (tiempo.tm_hour	== ESC)
 			{
@@ -313,7 +328,11 @@ cofunc unsigned long int	RTC_WRITE_Time(int (*func_get)(), void (*func_print)())
 			time = read_rtc();
 			mktm ( &tiempo_actual, time);
 			(*func_print) ("Ingrese Minutos \n");
-			waitfor ((*func_get)(minutos));
+			waitfor (error = ((*func_get)(minutos)!=0));
+			if (error == -1)
+			{
+				return ERROR ;
+			}
 			
 			
 /*				if (tiempo.tm_min	== ESC)

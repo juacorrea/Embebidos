@@ -25,6 +25,8 @@
 #define AINBUFSIZE 				127
 #define AOUTBUFSIZE 			127
 
+#define ERROR					69
+
 
 #define PIC_COM_TIMEOUT			100
 #define PIC_MAX_MSG_LENGTH		29
