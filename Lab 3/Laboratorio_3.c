@@ -24,7 +24,7 @@ void print_ethernet( char *p_string )
 ya que esta funcion es siempre llamada por un wfd*/
 int get_ethernet (char *p_string )
 {
-		if (tcp_tick(&echosock) == 1)
+		if (tcp_tick(&echosock) != 0)
 		{
 			//sock_wait_input(&echosock,0,NULL,&status)
 			if (sock_bytesready(&echosock)>0)
