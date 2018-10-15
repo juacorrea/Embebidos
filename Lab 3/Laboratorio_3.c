@@ -125,6 +125,7 @@ main()
 				}
 		}
 //----------------------------------------------------------------------------
+<<<<<<< HEAD
 //-------------------------CHEQUEO CONEXION Y REINICIO CONEXION---------------
 	 costate 
 		{
@@ -133,6 +134,15 @@ main()
 			//tcp_tick(&echosock);
 			yield;
 		} 
+=======
+	 costate
+		{
+		while (tcp_tick(&echosock))
+		{
+			//tcp_tick(&echosock);
+			yield;
+		}
+>>>>>>> 3b4aa460bf6d07d4e0ac1fe90bbf26b8ce7702b2
 		tcp_listen(&echosock,PORT,0,0,NULL,0);
 		while (!sock_established(&echosock))
 			{
@@ -140,10 +150,18 @@ main()
 				yield;
 			}
 		printf("Usuario Conectado\n");
+<<<<<<< HEAD
 
 		}
 //------------------------------------------------------------------------------
 	}	
+=======
+		//sock_mode(&echosock,TCP_MODE_ASCII);
+
+		}
+
+	}
+>>>>>>> 3b4aa460bf6d07d4e0ac1fe90bbf26b8ce7702b2
 }
 
 
