@@ -41,19 +41,22 @@ cofunc int EVENTO_Menu_Usuario [2] (struct Event *puntero_evento , int (*func_ge
 	char tarea;
 	char tarea_s[2];
 	char buffer_print[256];
+	//char buffer_menu[1024];
     char eventos_guardados;
 	error = 0;
 	error_conexion = 0;
 
 //---------------------MENU-----------------------------------------------------
-	(*func_print)("\n Elija la tarea a realizar\n\t1 = Fijar Hora del reloj\n\t");
+	/*sprintf(buffer_print,"\nElija la tarea a realizar\n\t1 = Fijar Hora del reloj\n\t2 = Consultar Hora \n\t3 = Agregar Evento al calendario \n\t4 = Quitar Evento del calendario \n\t5 = Consultar lista de eventos activos del calendario\n\t6 = Consultar entradas analogicas\n\t");
+	(*func_print)(buffer_menu);
+	*/
+	(*func_print)("\nElija la tarea a realizar\n\t1 = Fijar Hora del reloj\n\t");
 	waitfor(DelayMs(10));
 	(*func_print)("2 = Consultar Hora \n\t3 = Agregar Evento al calendario \n\t");
 	waitfor(DelayMs(10));
 	(*func_print)("4 = Quitar Evento del calendario \n\t5 = Consultar lista de eventos activos del calendario\n\t");
 	waitfor(DelayMs(10));
 	(*func_print)("6 = Consultar entradas analogicas\n\t");
-
 	waitfor (error_conexion=((*func_get)(tarea_s)!=0));
 	if (error_conexion == -1)
 	{
@@ -69,7 +72,7 @@ cofunc int EVENTO_Menu_Usuario [2] (struct Event *puntero_evento , int (*func_ge
 		esto me devuelve un valor y ese valor se lo asigno al RT, la funcion devuelve 0, ya que
 		*/
 				case(1):
-				wfd time = RTC_WRITE_Time[n](func_get,  func_print);
+				wfd time = RTC_WRITE_Time[n](func_get, func_print);
 				if (time == ERROR)
 				{
 					return ERROR ;
@@ -78,7 +81,7 @@ cofunc int EVENTO_Menu_Usuario [2] (struct Event *puntero_evento , int (*func_ge
 				(*func_print)("\n HORA CONFIGURADA\n");
 				time = read_rtc();
 				mktm ( &tiempo_actual, time);
-				sprintf(buffer_print,"\n Fecha:%d/%d/%d \n Hora %d:%d:%d \n" ,tiempo_actual.tm_mday, tiempo_actual.tm_mon, tiempo_actual.tm_year + 1900, tiempo_actual.tm_hour, tiempo_actual.tm_min, tiempo_actual.tm_sec);
+				sprintf(buffer_print,"\nFecha:%d/%d/%d\nHora %d:%d:%d\n" ,tiempo_actual.tm_mday, tiempo_actual.tm_mon, tiempo_actual.tm_year + 1900, tiempo_actual.tm_hour, tiempo_actual.tm_min, tiempo_actual.tm_sec);
 				(*func_print)(buffer_print);
 				return 0  ;
 		//----------------------------------------------------------------------
@@ -99,14 +102,12 @@ cofunc int EVENTO_Menu_Usuario [2] (struct Event *puntero_evento , int (*func_ge
 		(antes de pedirle al usuario que ingrese todos los datos*/
 				case (3):
 				hay_lugar = 0;
-				printf("%d",n);
 				for ( i = 0 ; i<(CANTIDAD_EVENTOS); i++)
 				{
 					if ( puntero_evento->numero == VACIO) //Cuando el lugar esta libre anoto el evento
 					{
 						puntero_evento->numero  = i; //Lo pongo en un valor distinto asi no me lo modifica otro usuario
 						i_1 = i;
-						printf("%d",n);
 						wfd time =  RTC_WRITE_Time[n]( func_get,  func_print);
 						if (time == ERROR)
 						{
@@ -241,7 +242,7 @@ cofunc int EVENTO_Menu_Usuario [2] (struct Event *puntero_evento , int (*func_ge
 									{
 										time_evento = puntero_evento->time;
 										mktm ( &tiempo_actual, time_evento);
-										sprintf(buffer_print,"\nEvento %d:\n\tFecha:%d/%d/%d \n\t Hora %d:%d:%d\n\tLed: %d\t Frec.:%d ms\n" ,i,tiempo_actual.tm_mday, tiempo_actual.tm_mon, tiempo_actual.tm_year+1900, tiempo_actual.tm_hour, tiempo_actual.tm_min, tiempo_actual.tm_sec,puntero_evento->param,puntero_evento->frec);
+										sprintf(buffer_print,"\nEvento %d:\n\tFecha:%d/%d/%d \n\tHora %d:%d:%d\n\tLed: %d\t Frec.:%d ms\n" ,i,tiempo_actual.tm_mday, tiempo_actual.tm_mon, tiempo_actual.tm_year+1900, tiempo_actual.tm_hour, tiempo_actual.tm_min, tiempo_actual.tm_sec,puntero_evento->param,puntero_evento->frec);
 										(*func_print)(buffer_print);
 										waitfor(DelayMs(10));
 									}
