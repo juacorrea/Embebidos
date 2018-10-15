@@ -93,7 +93,9 @@ main()
 				{
 					if (evento[i].time == time_2)
 					{
-						printf("\n Evento!! %d\n",evento[i].numero);
+						sprintf(buffer_print,"\n Evento!! %d\n",evento[i].numero);
+						print_consola(buffer_print);
+						print_ethernet(buffer_print);						
 						led = evento[i].param;
 						frecuencia = evento[i].frec;
 						wfd LED_Prender_Led_frec_cant_veces(led,  frecuencia);
