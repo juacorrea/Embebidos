@@ -1,10 +1,7 @@
 /*** BeginHeader */
-
 #use IO.LIB
 #use LED.LIB
 #use RTC.LIB
-
-
 
 struct Event
 {
@@ -13,23 +10,19 @@ struct Event
 	char param;
 	int frec;
 	unsigned long time;
-
 } ;
 
-#define PRENDER						1
+#define PRENDER							1
 #define APAGAR					  		0
-#define CANTIDAD_EVENTOS			8
+#define CANTIDAD_EVENTOS				8
 #define VACIO							-1
-
 /*** EndHeader */
-
 
 /*** BeginHeader EVENTO_Menu_Usuario  */
 cofunc int EVENTO_Menu_Usuario [2](struct Event *puntero_evento , int (*func_get)(), void (*func_print)(),int n);
 /*** EndHeader */
 cofunc int EVENTO_Menu_Usuario [2] (struct Event *puntero_evento , int (*func_get)(), void (*func_print)(),int n)
 {
-
 	int contador_eventos;
 	struct tm tiempo_actual;
 	unsigned long int time;
@@ -48,8 +41,7 @@ cofunc int EVENTO_Menu_Usuario [2] (struct Event *puntero_evento , int (*func_ge
 	char tarea;
 	char tarea_s[2];
 	char buffer_print[256];
-   char eventos_guardados;
-
+    char eventos_guardados;
 	error = 0;
 	error_conexion = 0;
 
@@ -69,8 +61,6 @@ cofunc int EVENTO_Menu_Usuario [2] (struct Event *puntero_evento , int (*func_ge
 	}
 	tarea = atoi (tarea_s);
 //----------------------------------------------------------------------------
-
-
 //---------------------------------TAREAS-------------------------------------
 			switch (tarea)
 			{
@@ -122,21 +112,17 @@ cofunc int EVENTO_Menu_Usuario [2] (struct Event *puntero_evento , int (*func_ge
 						{
 							return ERROR ;
 						}
-
 						i = i_1;
 						puntero_evento->time = time;
-
 						if (time == 0)
 						{
 							(*func_print) ("\n EVENTO NO CONFIGURADO \n");
 							puntero_evento->numero = VACIO;
 							return 0 ;
 						}
-
 						puntero_evento->numero = i;
 						puntero_evento->command = PRENDER;
 						(*func_print) ("Elija un LED para el evento (Entre 0 Y 7)\n");
-
 						error = 0;
 						while (error < 1)
 						{
@@ -175,7 +161,6 @@ cofunc int EVENTO_Menu_Usuario [2] (struct Event *puntero_evento , int (*func_ge
 							}
 							frec = atoi (w_s);
 							i = i_1;
-							//t = 0;
 							if (frec <10 && frec >=0)
 						   {
 								puntero_evento->frec = frec;      // frecuencia con la que desea prender y apagar el led
@@ -195,10 +180,8 @@ cofunc int EVENTO_Menu_Usuario [2] (struct Event *puntero_evento , int (*func_ge
 						   }
 						}
 					}
-
 							puntero_evento ++; //AUMENTO LA DIRECCION DEL PUNTERO A NUMERO
 						}
-
 						if (hay_lugar == 0)
 						{
 							(*func_print)("\n NO HAY ESPACIO EN MEMORIA SUFICIENTE  \t\n");
@@ -213,22 +196,16 @@ cofunc int EVENTO_Menu_Usuario [2] (struct Event *puntero_evento , int (*func_ge
 		si no existe puede ser porque no hay un evento configurado o porque
 		exede la cantidad de eventos maxima (CANTIDAD_EVENTOS).*/
 				case (4):
-
 					eventos_guardados=0;
-
 					for ( i = 0 ; i<CANTIDAD_EVENTOS; i++)
-									{
-										if (puntero_evento->numero != VACIO)
-										{
-											eventos_guardados++;
-
-										}
-
-										puntero_evento ++;
-									}
-
-									puntero_evento = puntero_evento - CANTIDAD_EVENTOS;
-
+					{
+						if (puntero_evento->numero != VACIO)
+						{
+							eventos_guardados++;
+						}
+						puntero_evento ++;
+					}
+					puntero_evento = puntero_evento - CANTIDAD_EVENTOS;
 					if (eventos_guardados == 0)
 					{
 					(*func_print)(" \n No hay eventos guardados");
@@ -287,7 +264,6 @@ cofunc int EVENTO_Menu_Usuario [2] (struct Event *puntero_evento , int (*func_ge
 		/*Imprime en pantalla unicamente los eventos que tengan el valor de evento.numero != VACIO*/
 
 				case(5):
-
                 contador_eventos = 0;
                 for ( i = 0 ; i<CANTIDAD_EVENTOS; i++)
 				{
@@ -315,24 +291,19 @@ cofunc int EVENTO_Menu_Usuario [2] (struct Event *puntero_evento , int (*func_ge
 		//--------------------------ENTRADAS ANALOGICAS-------------------------
 		/*Imprime en pantalla ambas entradas analogicas*/
 				case (6):
-
 				sprintf(buffer_print,"Input 0 = %d\nInput 1 = %d\n", IO_getAnalogInput( 0 ),IO_getAnalogInput( 1 ));
 				(*func_print)(buffer_print);
 				waitfor(DelayMs(10));
-
 				return 0;
 		//----------------------------------------------------------------------
 				default:
 				(*func_print)("ERROR numero equivocado\n");
-				//sprintf(buffer_print,"%d",tarea);
-				//(*func_print)(buffer_print);
 				waitfor(DelayMs(10));
 				return 0;
 			}
 //----------------------------------------------------------------------
-
 }
-
+	
 
 
 

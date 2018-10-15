@@ -16,19 +16,18 @@ void print_ethernet( char *p_string )
 {
 	sock_puts (&echosock, p_string);
 }
-/*La funcion get_ethernet devuelve uno cuando le llego el valor, cero cuando no
+/*La funcion get_ethernet devuelve uno cuando le llego el valor, cero cuando no,
+menos uno cuando la conexion esta caida.
 ya que esta funcion es siempre llamada por un wfd*/
 int get_ethernet (char *p_string )
 {
 	if (tcp_tick(&echosock) != 0)
 	{
-		//sock_wait_input(&echosock,0,NULL,&status)
 		if (sock_bytesready(&echosock)>0)
 		{
 			if(sock_gets(&echosock,p_string,512))
 			{
 				sock_puts(&echosock,p_string);
-				//printf("%s",p_string);
 				return 1;
 			}
 		}
@@ -39,20 +38,12 @@ int get_ethernet (char *p_string )
 	}
 	else
 	{
-
 		return ERROR_CONEXION; // TIENE QUE VALER -1
-
 	}
 }
 
-
-
-
-
-
 main()
 {
-
 	struct Event evento[CANTIDAD_EVENTOS+1];
 	unsigned long int time_2;
 	int i ;
@@ -68,17 +59,13 @@ main()
 		evento[i].numero = VACIO;
     }
 
-
 	HW_init();
 
 	while(1)
 	{
-
-		costate // Usuario
-		{
 //------------------- MENU DE USUARIO ---------------------------------------
-
-
+		costate
+		{
 			wfd chequeo = EVENTO_Menu_Usuario[0]( evento, getswf, print_consola,0 );
 		}
 //----------------------------------------------------------------------------
@@ -111,7 +98,6 @@ main()
 						frecuencia = evento[i].frec;
 						wfd LED_Prender_Led_frec_cant_veces(led,  frecuencia);
 						evento[i].numero = VACIO;
-
 					}
 				}
 			}
@@ -122,14 +108,12 @@ main()
 	costate
 		{
 			tcp_listen(&echosock,PORT,0,0,NULL,0);
-			//sock_wait_established(&echosock,sock_delay,NULL,&status)
 			while (!sock_established(&echosock))
 				{
 					tcp_tick(NULL);
 					yield;
 				}
 			printf("Usuario Conectado\n");
-
 			sock_mode(&echosock,TCP_MODE_ASCII);
 			while(tcp_tick(&echosock))
 				{
@@ -141,8 +125,25 @@ main()
 				}
 		}
 //----------------------------------------------------------------------------
+	 costate
+		{
+		while (tcp_tick(&echosock))
+		{
+			//tcp_tick(&echosock);
+			yield;
+		}
+		tcp_listen(&echosock,PORT,0,0,NULL,0);
+		while (!sock_established(&echosock))
+			{
+				tcp_tick(NULL);
+				yield;
+			}
+		printf("Usuario Conectado\n");
+		//sock_mode(&echosock,TCP_MODE_ASCII);
+
+		}
+
 	}
-	
 }
 
 

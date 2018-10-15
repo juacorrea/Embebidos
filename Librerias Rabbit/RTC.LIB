@@ -170,24 +170,15 @@ cofunc unsigned long int	RTC_WRITE_Time[2](int (*func_get)(), void (*func_print)
 			{
 				return ERROR;
 			}
-			/*if (tiempo.tm_year == ESC)
-			{
-				tiempo_devolver = 0;
-			}
-
-			*/
-
 			if (atoi (ano) <= MAX_ANO && atoi (ano) >= MIN_ANO)
 			{
 				tiempo.tm_year = atoi (ano) - 1900;
-
 				if (tiempo.tm_year >= tiempo_actual.tm_year)
 				{
 					error_var = 1;
 					(*func_print) ("\n\t Ano Guardado\n ");
 					waitfor(DelayMs(10));
 				}
-
 			}
 			if(error_var == 0)
 			{
@@ -195,7 +186,6 @@ cofunc unsigned long int	RTC_WRITE_Time[2](int (*func_get)(), void (*func_print)
 				waitfor(DelayMs(10));
 				break;
 			}
-
 			case (1):
 			time = read_rtc();
 			mktm ( &tiempo_actual, time);
@@ -205,11 +195,6 @@ cofunc unsigned long int	RTC_WRITE_Time[2](int (*func_get)(), void (*func_print)
 			{
 				return ERROR;
 			}
-
-/*				if (tiempo.tm_mon == ESC)
-			{
-				tiempo_devolver = 0;
-			}*/
 			if (atoi (mes) <= MAX_MES && atoi (mes)>= MIN_MES)
 			{
 				tiempo.tm_mon = atoi (mes);
@@ -226,7 +211,6 @@ cofunc unsigned long int	RTC_WRITE_Time[2](int (*func_get)(), void (*func_print)
 					(*func_print) ("\n\t Mes Guardado\n ");
 					waitfor(DelayMs(10));
 				}
-
 			}
 			if(error_var == 1)
 			{
@@ -234,7 +218,6 @@ cofunc unsigned long int	RTC_WRITE_Time[2](int (*func_get)(), void (*func_print)
 				waitfor(DelayMs(10));
 				break;
 			}
-
 			case (2):
 			time = read_rtc();
 			mktm ( &tiempo_actual, time);
@@ -244,13 +227,6 @@ cofunc unsigned long int	RTC_WRITE_Time[2](int (*func_get)(), void (*func_print)
 			{
 				return ERROR;
 			}
-
-
-/*				if (tiempo.tm_mday == ESC)
-			{
-				tiempo_devolver = 0;
-			}*/
-
 			if (atoi (dia) <= MAX_DIA && atoi (dia) >= MIN_DIA )
 			{
 				tiempo.tm_mday = atoi (dia);
@@ -258,7 +234,6 @@ cofunc unsigned long int	RTC_WRITE_Time[2](int (*func_get)(), void (*func_print)
 				chequeo_mes_para_func = tiempo.tm_mon;
 				chequeo_ano_para_func = tiempo.tm_year;
 				chequeo_dia = RTC_CHEQUEO_DIA (chequeo_mes_para_func, chequeo_dia_para_func, chequeo_ano_para_func);
-
 				if (chequeo_dia == 1 )
 				{
 					if (tiempo.tm_mon > tiempo_actual.tm_mon || tiempo.tm_year > tiempo_actual.tm_year)
@@ -274,7 +249,6 @@ cofunc unsigned long int	RTC_WRITE_Time[2](int (*func_get)(), void (*func_print)
 						waitfor(DelayMs(10));
 					}
 				}
-
 			}
 			 if(error_var == 2)
 			{
@@ -282,8 +256,6 @@ cofunc unsigned long int	RTC_WRITE_Time[2](int (*func_get)(), void (*func_print)
 				waitfor(DelayMs(10));
 				break;
 			}
-
-
 			case (3):
 			time = read_rtc();
 			mktm ( &tiempo_actual, time);
@@ -293,15 +265,9 @@ cofunc unsigned long int	RTC_WRITE_Time[2](int (*func_get)(), void (*func_print)
 			{
 				return ERROR ;
 			}
-
-/*				if (tiempo.tm_hour	== ESC)
-			{
-				tiempo_devolver = 0;
-			}*/
 			if (atoi (hora) <= MAX_HORA && atoi (hora) >= MIN_HORA )
 			{
 				tiempo.tm_hour = atoi (hora);
-
 				if ( tiempo.tm_year > tiempo_actual.tm_year || tiempo.tm_mon > tiempo_actual.tm_mon || tiempo.tm_mday > tiempo_actual.tm_mday)
 				{
 					error_var = 4;
@@ -314,8 +280,6 @@ cofunc unsigned long int	RTC_WRITE_Time[2](int (*func_get)(), void (*func_print)
 					(*func_print) ("\n\t Hora Guardada\n ");
 					waitfor(DelayMs(10));
 				}
-
-
 			}
 			if(error_var == 3)
 			{
@@ -323,7 +287,6 @@ cofunc unsigned long int	RTC_WRITE_Time[2](int (*func_get)(), void (*func_print)
 				waitfor(DelayMs(10));
 				break;
 			}
-
 			case (4):
 			time = read_rtc();
 			mktm ( &tiempo_actual, time);
@@ -333,13 +296,6 @@ cofunc unsigned long int	RTC_WRITE_Time[2](int (*func_get)(), void (*func_print)
 			{
 				return ERROR ;
 			}
-
-
-/*				if (tiempo.tm_min	== ESC)
-			{
-				tiempo_devolver = 0;
-
-			}*/
 			if (atoi (minutos) <= MAX_MINSEC && atoi (minutos) >= MIN_MINSEC)
 			{
 				tiempo.tm_min = atoi (minutos);
@@ -355,7 +311,6 @@ cofunc unsigned long int	RTC_WRITE_Time[2](int (*func_get)(), void (*func_print)
 					(*func_print) ("\n\t Minutos Guardados\n ");
 					waitfor(DelayMs(10));
 				}
-
 			}
 			if(error_var == 4)
 			{
@@ -363,21 +318,15 @@ cofunc unsigned long int	RTC_WRITE_Time[2](int (*func_get)(), void (*func_print)
 				waitfor(DelayMs(10));
 				break;
 			}
-
 			case (5):
 			tiempo.tm_sec  = 0;
 			error_var ++;
 			tiempo_devolver = mktime(&tiempo);
 			vueltas = 6;
-
 			break;
 		}
-
 	}
-
 	tiempo_devolver = mktime(&tiempo);
-
 	return tiempo_devolver;
 }
-
 //--------------------------------------------------------------------------------------------------------------------
