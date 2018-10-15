@@ -132,13 +132,13 @@ main()
 
 			sock_mode(&echosock,TCP_MODE_ASCII);
 			while(tcp_tick(&echosock))
-			{
-			wfd  chequeo = EVENTO_Menu_Usuario[1](evento, get_ethernet, print_ethernet,1 );
-			}
+				{
+				wfd  chequeo = EVENTO_Menu_Usuario[1](evento, get_ethernet, print_ethernet,1 );
+				}
 			if (chequeo == ERROR)
-			{
-				printf("Conexion caida /n");
-			}
+				{
+					printf("Conexion caida /n");
+				}
 		}
 //----------------------------------------------------------------------------
 	}
