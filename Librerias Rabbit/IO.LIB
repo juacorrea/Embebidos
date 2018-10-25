@@ -8,10 +8,6 @@
 #define MY_NETMASK "255.255.255.0"
 #define MY_GATEWAY "10.10.6.2"
 
-
-
-#use "dcrtcp.lib"
-
 #define STDIO_ENABLE_LONG_STRINGS
 
 #define INPUT_DIR				0
@@ -25,25 +21,18 @@
 #define AINBUFSIZE 				127
 #define AOUTBUFSIZE 			127
 
-#define ERROR					69
-
-
 #define PIC_COM_TIMEOUT			100
 #define PIC_MAX_MSG_LENGTH		29
 #define PIC_PROTOCOL_BAUDRATE	9600
 
-#define CANTIDAD_VECES 				10
-
-//#define TCPCONFIG 0
-
-
-
 #memmap xmem
 #use "dcrtcp.lib"
-
 #define PORT 7
 
-tcp_Socket echosock;
+#define CANTIDAD_USUARIOS		3
+
+
+tcp_Socket echosock [CANTIDAD_USUARIOS];
 
 enum portName
 {
@@ -105,11 +94,8 @@ void HW_init( void )
 	BitWrPortI(PFDDR, &PFDDRShadow, INPUT_DIR, BIT_7); 	//Entrada 7
 
 	// Puerto Serie PIC
-	serCopen(PIC_PROTOCOL_BAUDRATE);
-
-	printf("Iniciando Socket\n");
+	serCopen(PIC_PROTOCOL_BAUDRATE);	
 	sock_init();
-	printf("Iniciado\n");
 	}
 
 /*** BeginHeader IO_getInput */
